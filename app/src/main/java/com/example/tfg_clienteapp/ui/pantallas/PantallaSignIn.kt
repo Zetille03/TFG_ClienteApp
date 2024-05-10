@@ -1,4 +1,4 @@
-package com.example.tfg_clienteapp.pantallas
+package com.example.tfg_clienteapp.ui.pantallas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,13 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tfg_clienteapp.R
-import com.example.tfg_clienteapp.componentes.BotonHabilitado
-import com.example.tfg_clienteapp.componentes.BotonInhabilitado
-import com.example.tfg_clienteapp.componentes.CabeceraTextoNormal
-import com.example.tfg_clienteapp.componentes.CampoContraseñaUnico
-import com.example.tfg_clienteapp.componentes.CampoTextoUnico
-import com.example.tfg_clienteapp.componentes.TextoCambiarTipoRegistro
-import com.example.tfg_clienteapp.componentes.TextoNormal
+import com.example.tfg_clienteapp.ui.componentes.BotonHabilitado
+import com.example.tfg_clienteapp.ui.componentes.BotonInhabilitado
+import com.example.tfg_clienteapp.ui.componentes.CabeceraTextoNormal
+import com.example.tfg_clienteapp.ui.componentes.CampoContraseñaUnico
+import com.example.tfg_clienteapp.ui.componentes.CampoTextoUnico
+import com.example.tfg_clienteapp.ui.componentes.TextoCambiarTipoRegistro
+import com.example.tfg_clienteapp.ui.componentes.TextoNormal
 import com.example.tfg_clienteapp.ui.theme.*
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.tfg_clienteapp.pantallas
+package com.example.tfg_clienteapp.ui.pantallas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

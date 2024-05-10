@@ -14,10 +14,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.tfg_clienteapp.R
-import com.example.tfg_clienteapp.pantallas.PantallaInicio
-import com.example.tfg_clienteapp.pantallas.PantallaMenuPrincipal
-import com.example.tfg_clienteapp.pantallas.PantallaSignIn
-import com.example.tfg_clienteapp.pantallas.PantallaSignUp
+import com.example.tfg_clienteapp.ui.pantallas.PantallaInicio
+import com.example.tfg_clienteapp.ui.pantallas.PantallaMenuPrincipal
+import com.example.tfg_clienteapp.ui.pantallas.PantallaSignIn
+import com.example.tfg_clienteapp.ui.pantallas.PantallaSignUp
 import com.example.tfg_clienteapp.ui.data.Pantallas
 
 @Composable

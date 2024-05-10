@@ -1,4 +1,4 @@
-package com.example.tfg_clienteapp.pantallas
+package com.example.tfg_clienteapp.ui.pantallas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,16 +17,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tfg_clienteapp.R
-import com.example.tfg_clienteapp.componentes.BotonInhabilitado
-import com.example.tfg_clienteapp.componentes.CabeceraTextoNormal
-import com.example.tfg_clienteapp.componentes.CajaChequeo
-import com.example.tfg_clienteapp.componentes.CampoContraseñaUnico
-import com.example.tfg_clienteapp.componentes.CampoTextoUnico
-import com.example.tfg_clienteapp.componentes.CuerpoPoliticaPrivacidad
-import com.example.tfg_clienteapp.componentes.CuerpoTerminosUso
-import com.example.tfg_clienteapp.componentes.DialogoMuchoTexto
-import com.example.tfg_clienteapp.componentes.TextoCambiarTipoRegistro
-import com.example.tfg_clienteapp.componentes.TextoNormal
+import com.example.tfg_clienteapp.ui.componentes.BotonInhabilitado
+import com.example.tfg_clienteapp.ui.componentes.CabeceraTextoNormal
+import com.example.tfg_clienteapp.ui.componentes.CajaChequeo
+import com.example.tfg_clienteapp.ui.componentes.CampoContraseñaUnico
+import com.example.tfg_clienteapp.ui.componentes.CampoTextoUnico
+import com.example.tfg_clienteapp.ui.componentes.CuerpoPoliticaPrivacidad
+import com.example.tfg_clienteapp.ui.componentes.CuerpoTerminosUso
+import com.example.tfg_clienteapp.ui.componentes.DialogoMuchoTexto
+import com.example.tfg_clienteapp.ui.componentes.TextoCambiarTipoRegistro
+import com.example.tfg_clienteapp.ui.componentes.TextoNormal
 import com.example.tfg_clienteapp.ui.theme.*
 
 @Composable
@@ -87,7 +87,7 @@ fun PantallaSignUp(accionNavigator: ()-> Unit = {}){
 
 
         if(politicaMostrado.value){
-            DialogoMuchoTexto(textoCabecera = stringResource(id = R.string.politica_privacidad_cabecera), cuerpo = {CuerpoPoliticaPrivacidad()}, onDismiss = { politicaMostrado.value = false })
+            DialogoMuchoTexto(textoCabecera = stringResource(id = R.string.politica_privacidad_cabecera), cuerpo = { CuerpoPoliticaPrivacidad() }, onDismiss = { politicaMostrado.value = false })
         }
 
         if(terminosMostrado.value){

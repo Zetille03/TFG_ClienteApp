@@ -1,4 +1,4 @@
-package com.example.tfg_clienteapp.componentes
+package com.example.tfg_clienteapp.ui.componentes
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.tfg_clienteapp.model.Consumidor
 import com.example.tfg_clienteapp.ui.theme.*
 
 @Composable
