@@ -2,4 +2,8 @@
 <resources>
 
     <style name="Theme.TFG_ClienteApp" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.PantallaCarga" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#FFb39fcc</item>
+        <item name="android:windowBackground">@drawable/carga_background</item>
+    </style>
 </resources>

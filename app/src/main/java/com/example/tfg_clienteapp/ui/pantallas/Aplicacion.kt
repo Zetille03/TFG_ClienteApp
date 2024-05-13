@@ -1,4 +1,4 @@
-package com.example.tfg_clienteapp.app
+package com.example.tfg_clienteapp.ui.pantallas
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.tfg_clienteapp.MyApp
 import com.example.tfg_clienteapp.R
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.pantallas.PantallaInicio
@@ -23,7 +24,8 @@ import com.example.tfg_clienteapp.ui.pantallas.PantallaSignUp
 import com.example.tfg_clienteapp.ui.data.Pantallas
 
 @Composable
-fun Aplicacion(navController: NavHostController = rememberNavController(), appViewModel: AppViewModel = viewModel()){
+fun Aplicacion(navController: NavHostController = rememberNavController()){
+    val appViewModel = AppViewModel(MyApp.instance)
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -42,10 +44,10 @@ fun Aplicacion(navController: NavHostController = rememberNavController(), appVi
                 )
             }
             composable(route = Pantallas.PantallaSignUp.name){
-                PantallaSignUp(accionNavigator = {navController.navigate(Pantallas.PantallaSignIn.name)})
+                PantallaSignUp(accionNavigator = {navController.navigate(Pantallas.PantallaSignIn.name)},appViewModel)
             }
             composable(route = Pantallas.PantallaSignIn.name){
-                PantallaSignIn(accionNavigator = {navController.navigate(Pantallas.PantallaSignUp.name)})
+                PantallaSignIn(accionNavigator = {navController.navigate(Pantallas.PantallaSignUp.name)},appViewModel)
             }
             composable(route = Pantallas.PantallaMenuPrincipal.name){
                 PantallaMenuPrincipal(navController)
