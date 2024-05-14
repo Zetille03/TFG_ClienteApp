@@ -100,7 +100,10 @@ fun CabeceraTextoNormal(value: String, modifier: Modifier = Modifier) {
 fun CampoTextoUser(
     viewmodel: AppViewModel,
     variableRemember: String,
-    textoLabel: String, @DrawableRes icono: Int){
+    textoLabel: String,
+    @DrawableRes icono: Int,
+    userValido: Boolean
+    ){
 
 
     OutlinedTextField(
@@ -116,13 +119,20 @@ fun CampoTextoUser(
         ),
         keyboardOptions = KeyboardOptions.Default,
         value = variableRemember,
-        onValueChange = { viewmodel.setUser(it) },
+        onValueChange = {
+            viewmodel.setUser(it)
+            viewmodel.setUserValido(viewmodel.isValidUser(it))
+        },
         leadingIcon = {
             Icon(painter = painterResource(id = icono),
                 contentDescription = "",
                 modifier = Modifier.sizeIn(maxHeight = 40.dp))
-        }
+        },
+        isError = !userValido
     )
+    if(!userValido){
+        Text("El usuario debe tener entre 5 y 30 caracteres")
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,7 +140,10 @@ fun CampoTextoUser(
 fun CampoTextoEmail(
     viewmodel: AppViewModel,
     variableRemember: String,
-    textoLabel: String, @DrawableRes icono: Int){
+    textoLabel: String, @DrawableRes icono: Int,
+    emailValido: Boolean
+
+){
 
 
     OutlinedTextField(
@@ -146,13 +159,19 @@ fun CampoTextoEmail(
         ),
         keyboardOptions = KeyboardOptions.Default,
         value = variableRemember,
-        onValueChange = { viewmodel.setEmail(it) },
+        onValueChange = { viewmodel.setEmail(it)
+                        viewmodel.setEmailValido(viewmodel.isValidEmail(it))
+                        },
         leadingIcon = {
             Icon(painter = painterResource(id = icono),
                 contentDescription = "",
                 modifier = Modifier.sizeIn(maxHeight = 40.dp))
-        }
+        },
+        isError = !emailValido
     )
+    if(!emailValido){
+        Text("El email no tiene una estructura valida")
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -161,7 +180,8 @@ fun CampoContraseñaUnico(
     viewmodel: AppViewModel,
     variableRemember: String,
     textoLabel: String,
-    @DrawableRes icono: Int
+    @DrawableRes icono: Int,
+    passwordValido: Boolean
 ) {
 
 
@@ -182,7 +202,9 @@ fun CampoContraseñaUnico(
         ),
         keyboardOptions = KeyboardOptions.Default,
         value = variableRemember,
-        onValueChange = { viewmodel.setPassword(it) },
+        onValueChange = { viewmodel.setPassword(it)
+                        viewmodel.setPasswordValido(viewmodel.isValidPassword(it))
+                        },
         leadingIcon = {
             Icon(
                 painter = painterResource(id = icono),
@@ -207,8 +229,15 @@ fun CampoContraseñaUnico(
                 Icon(imageVector = iconImage, contentDescription = "")
             }
         },
-        visualTransformation = if (contraseñaVisible.value) VisualTransformation.None else PasswordVisualTransformation()
+        visualTransformation = if (contraseñaVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+        isError = !passwordValido
+
     )
+
+    if(!passwordValido){
+        Text("La contraseña debe tener entre 6 y 16 caracteres")
+    }
+
 }
 
 @Composable
@@ -398,7 +427,7 @@ fun EleccionUsuario(viewmodel: AppViewModel) {
     fun BotonInhabilitado(
         textoBoton: String,
         accion: () -> Unit,
-        checkboxActivo: MutableState<Boolean>,
+        botonActivo: Boolean,
         modifier: Modifier = Modifier
     ) {
         Button(
@@ -409,7 +438,7 @@ fun EleccionUsuario(viewmodel: AppViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            enabled = checkboxActivo.value
+            enabled = botonActivo
         ) {
             Text(textoBoton)
         }

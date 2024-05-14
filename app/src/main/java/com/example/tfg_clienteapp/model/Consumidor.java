@@ -21,7 +21,6 @@ public class Consumidor {
     public Consumidor(){
 
     }
-
     public Consumidor(int idConsumidor, String username, String email, String password, List<ActividadConsumidor> listaActividadesDeConsumidor, List<ConsumidorActividadOfertante> listaConsumidoresActividadOfertantes) {
         this.idConsumidor = idConsumidor;
         this.username = username;
@@ -89,7 +88,7 @@ public class Consumidor {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idConsumidor, username, email, password, listaActividadesDeConsumidor, listaConsumidoresActividadOfertantes);
+        return Objects.hash(username, password);
     }
 
     @Override

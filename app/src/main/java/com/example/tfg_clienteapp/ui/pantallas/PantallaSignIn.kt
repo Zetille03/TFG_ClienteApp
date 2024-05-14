@@ -11,6 +11,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,10 @@ import com.example.tfg_clienteapp.ui.theme.*
 @Composable
 fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
     val logeoUiState by viewModel.logeoUiState.collectAsState()
+
+    val emailValido = rememberSaveable {
+        mutableStateOf(true)
+    }
 
     Surface(
         modifier = Modifier
@@ -48,12 +54,15 @@ fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
             CampoTextoUser(
                 viewModel,
                 logeoUiState.nombreUsuario,
-                textoLabel = "Usuario", R.drawable.profile_icon
+                textoLabel = "Usuario",
+                R.drawable.profile_icon,
+                logeoUiState.userValido
             )
             CampoContraseñaUnico(
                 viewModel,
                 logeoUiState.password, textoLabel = "Password",
-                R.drawable.password_icon
+                R.drawable.password_icon,
+                logeoUiState.passwordValido
             )
             EleccionUsuario(viewModel)
             TextoCambiarTipoRegistro(
@@ -62,7 +71,13 @@ fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
                 accionEnlace = accionNavigator)
             BotonHabilitado(
                 textoBoton = "Sign Up",
-                accion = { /*TODO*/ },
+                accion = {
+                    if(logeoUiState.tipoUsuario.equals("Consumidor")){
+//                    viewModel.comprobarSignin()
+                    }else{
+
+                    }
+                },
                 modifier = Modifier.padding(start = 40.dp, end = 40.dp)
             )
         }

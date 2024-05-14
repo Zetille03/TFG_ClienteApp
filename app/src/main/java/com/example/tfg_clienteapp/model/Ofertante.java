@@ -77,7 +77,7 @@ public class Ofertante {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idOfertante, username, email, password, listaActividadesOfertante, listaActividadesConsumidor);
+        return Objects.hash(username, password);
     }
 
     @Override

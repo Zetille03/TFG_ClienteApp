@@ -47,8 +47,9 @@ fun PantallaSignUp(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
         mutableStateOf(false)
     }
 
-    val logeoUiState by viewModel.logeoUiState.collectAsState()
 
+
+    val logeoUiState by viewModel.logeoUiState.collectAsState()
 
     Surface(
         modifier = Modifier
@@ -73,13 +74,18 @@ fun PantallaSignUp(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
             CampoTextoUser(
                 viewModel,
                 logeoUiState.nombreUsuario, textoLabel = "Usuario",
-                R.drawable.profile_icon)
+                R.drawable.profile_icon,
+                logeoUiState.userValido
+            )
             CampoTextoEmail(viewModel,
                 logeoUiState.email, textoLabel = "Email",
-                R.drawable.email_icon)
+                R.drawable.email_icon,
+                logeoUiState.emailValido)
             CampoContraseñaUnico(
                 viewModel,
-                logeoUiState.password, textoLabel = "Password", R.drawable.password_icon)
+                logeoUiState.password, textoLabel = "Password",
+                R.drawable.password_icon,
+                logeoUiState.passwordValido)
             EleccionUsuario(viewModel)
             CajaChequeo(politicaMostrado,terminosMostrado,checkboxPoliticas)
             TextoCambiarTipoRegistro(
@@ -95,7 +101,7 @@ fun PantallaSignUp(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
 
                          }
                      },
-                checkboxActivo = checkboxPoliticas,
+                botonActivo = checkboxPoliticas.value && viewModel.registroUsuarioValido(),
                 modifier = Modifier.padding(start = 40.dp, end = 40.dp)
             )
 

@@ -17,7 +17,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AppViewModel(private val context: Context): ViewModel()  {
+class AppViewModel(public val context: Context): ViewModel()  {
     private val _consumidorUiState: MutableStateFlow<ConsumidorUiState> = MutableStateFlow(ConsumidorUiState())
     val consumidorUiState: StateFlow<ConsumidorUiState> = _consumidorUiState.asStateFlow()
 
@@ -64,6 +64,49 @@ class AppViewModel(private val context: Context): ViewModel()  {
         }
     }
 
+    public fun setUserValido(valor: Boolean){
+        _logeoUiState.update {
+            it.copy(
+                userValido = valor
+            )
+        }
+    }
+
+    public fun setEmailValido(valor: Boolean){
+        _logeoUiState.update {
+            it.copy(
+                emailValido = valor
+            )
+        }
+    }
+    public fun setPasswordValido(valor: Boolean){
+        _logeoUiState.update {
+            it.copy(
+                passwordValido = valor
+            )
+        }
+    }
+
+
+    fun isValidEmail(email: String): Boolean {
+        val emailRegex = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
+        return emailRegex.matches(email)
+    }
+
+    fun isValidPassword(password: String): Boolean {
+        return password.length in 6..16
+    }
+
+    fun isValidUser(password: String): Boolean {
+        return password.length in 5..30
+    }
+
+    fun registroUsuarioValido(): Boolean{
+        return isValidPassword(logeoUiState.value.password)
+                && isValidEmail(logeoUiState.value.email)
+                && isValidUser(logeoUiState.value.nombreUsuario)
+    }
+
 
     public fun postConsumidor(){
         val c =  Consumidor()
@@ -74,12 +117,19 @@ class AppViewModel(private val context: Context): ViewModel()  {
         c.password = hash.toString()
         consumidorAPI.save(c).enqueue(object: Callback<Consumidor>{
             override fun onFailure(p0: Call<Consumidor>, p1: Throwable) {
-                Toast.makeText(context,"Error en el registro", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(p0: Call<Consumidor>, p1: Response<Consumidor>) {
-                Toast.makeText(context,"Usuario registrado", Toast.LENGTH_LONG).show()
+                if(p1.body()==null){
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+
+                }else{
+                    Toast.makeText(context,"Usuario registrado", Toast.LENGTH_LONG).show()
+                }
             }
+
+
         })
     }
 
@@ -87,7 +137,28 @@ class AppViewModel(private val context: Context): ViewModel()  {
 
     }
 
+    fun comprobarSigninConsumidor() {
+        val c =  Consumidor()
+        c.username = _logeoUiState.value.nombreUsuario
+        c.password = _logeoUiState.value.password
+        val hash = c.hashCode()
+        c.password = hash.toString()
+        consumidorAPI.getConsumidorLogIn(c.username,c.password).enqueue(object: Callback<Consumidor>{
+            override fun onResponse(p0: Call<Consumidor>, p1: Response<Consumidor>) {
+                if(p1.body()==null){
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
 
+                }else{
+                    Toast.makeText(context,"Usuario registrado", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(p0: Call<Consumidor>, p1: Throwable) {
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+            }
+
+        })
+    }
 
 
 }
