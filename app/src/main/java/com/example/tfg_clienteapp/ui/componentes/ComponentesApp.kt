@@ -2,6 +2,7 @@ package com.example.tfg_clienteapp.ui.componentes
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -18,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -28,6 +31,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -36,8 +40,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +67,8 @@ import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.architecture.LogeoUiState
 import com.example.tfg_clienteapp.ui.theme.*
 
+
+//region Textos
 @Composable
 fun TextoNormal(value: String,modifier: Modifier = Modifier, textAlign: TextAlign = TextAlign.Center) {
     Text(
@@ -95,6 +103,168 @@ fun CabeceraTextoNormal(value: String, modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+fun TextoClicableTerminosPolitica(
+    politicaMostrado: MutableState<Boolean>,
+    terminosMostrado: MutableState<Boolean>
+) {
+    val textoInicial = "Al continuar aceptas nuestra "
+    val textoPoliticaPrivacidad = "Política de privacidad"
+    val textoConsecuente = " y "
+    val terminosYCondicionesTexto = "Términos de Uso"
+
+    val annotatedString = buildAnnotatedString {
+        append(textoInicial)
+        append(TextoClicable(texto = textoPoliticaPrivacidad))
+        append(textoConsecuente)
+        append(TextoClicable(texto = terminosYCondicionesTexto))
+    }
+
+
+    ClickableText(text = annotatedString, onClick = { offset ->
+        annotatedString.getStringAnnotations(offset, offset)
+            .firstOrNull()?.also { span ->
+                if (span.item == "Términos de Uso") {
+                    terminosMostrado.value = true
+                }
+                if (span.item == "Política de privacidad") {
+                    politicaMostrado.value = true
+                }
+            }
+
+    })
+}
+
+@Composable
+fun TextoClicable(texto: String): AnnotatedString {
+    val annotatedString = buildAnnotatedString {
+        withStyle(style = SpanStyle(color = Intenso2)) {
+            pushStringAnnotation(tag = texto, annotation = texto)
+            append(texto)
+        }
+    }
+
+    return annotatedString
+}
+
+@Composable
+fun TextoCambiarTipoRegistro(
+    textoNormal: String,
+    textoEnlace: String,
+    accionEnlace: () -> Unit
+) {
+
+    var annotatedString = buildAnnotatedString {
+        append(textoEnlace)
+        append(TextoClicable(texto = textoNormal))
+    }
+
+    ClickableText(
+        text = annotatedString,
+        onClick = { offset ->
+            annotatedString.getStringAnnotations(offset, offset)
+                .firstOrNull()?.also { span ->
+                    if (span.item == textoNormal) {
+                        accionEnlace()
+                    }
+
+                }
+
+        },
+
+        )
+}
+
+@Composable
+fun CuerpoPoliticaPrivacidad() {
+    TextoNormal(
+        value = "Esta Política de Privacidad describe cómo " +
+                "Market Onuba recopila, utiliza y " +
+                "comparte información personal de los usuarios de nuestra aplicación " +
+                "móvil/sitio web/servicio (en adelante, \"Servicio\"). Al utilizar " +
+                "nuestro Servicio, aceptas las prácticas descritas en esta Política de Privacidad.",
+        textAlign = TextAlign.Justify
+    )
+    CabeceraTextoNormal(value = "Información Recopilada")
+    TextoNormal(
+        "Podemos recopilar información personal identificable, " +
+                "como tu nombre, dirección de correo electrónico, dirección postal, " +
+                "número de teléfono, información de pago, y cualquier otra información " +
+                "que nos proporciones al utilizar nuestro Servicio. También podemos " +
+                "recopilar información no identificable, como tu dirección IP, tipo de " +
+                "navegador, proveedor de servicios de Internet, páginas de referencia/salida " +
+                "y la fecha/hora de acceso",
+        textAlign = TextAlign.Justify
+    )
+    CabeceraTextoNormal(value = "Uso de la Información")
+    TextoNormal(
+        value = "Podemos recopilar información personal identificable, " +
+                "como tu nombre, dirección de correo electrónico, dirección postal, " +
+                "número de teléfono, información de pago, y cualquier otra información " +
+                "que nos proporciones al utilizar nuestro Servicio. También podemos " +
+                "recopilar información no identificable, como tu dirección IP, " +
+                "tipo de navegador, proveedor de servicios de Internet, páginas de " +
+                "referencia/salida y la fecha/hora de acceso.",
+        textAlign = TextAlign.Justify
+    )
+    CabeceraTextoNormal(value = "Seguridad de la Información")
+    TextoNormal(
+        "Nos esforzamos por proteger la seguridad de tu " +
+                "información personal y tomamos medidas razonables para " +
+                "evitar el acceso no autorizado, el uso, la divulgación o " +
+                "la alteración de tu información. Sin embargo, ninguna transmisión de " +
+                "datos por Internet o método de almacenamiento electrónico es 100% " +
+                "seguro, por lo que no podemos garantizar su seguridad absoluta.",
+        textAlign = TextAlign.Justify
+    )
+}
+
+@Composable
+fun CuerpoTerminosUso() {
+    CabeceraTextoNormal(value = "INFORMACIÓN RELEVANTE")
+    TextoNormal(
+        "Es requisito necesario para la adquisición de " +
+                "los productos que se ofrecen en este sitio, que lea y " +
+                "acepte los siguientes Términos y Condiciones que a " +
+                "continuación se redactan. El uso de nuestros servicios " +
+                "así como la compra de nuestros productos implicará que " +
+                "usted ha leído y aceptado los Términos y Condiciones " +
+                "de Uso en el presente documento. Todas los productos  " +
+                "que son ofrecidos por nuestro sitio web pudieran ser creadas, " +
+                "cobradas, enviadas o presentadas por una página web tercera y " +
+                "en tal caso estarían sujetas a sus propios Términos y Condiciones. " +
+                "En algunos casos, para adquirir un producto, será necesario el " +
+                "registro por parte del usuario, con ingreso de datos personales " +
+                "fidedignos y definición de una contraseña.",
+        textAlign = TextAlign.Justify
+    )
+    CabeceraTextoNormal(value = "USO NO AUTORIZADO")
+    TextoNormal(
+        "En caso de que aplique (para venta de software, templetes, " +
+                "u otro producto de diseño y programación) usted no puede " +
+                "colocar uno de nuestros productos, modificado o sin modificar, " +
+                "en un CD, sitio web o ningún otro medio y ofrecerlos para la redistribución " +
+                "o la reventa de ningún tipo.",
+        textAlign = TextAlign.Justify
+    )
+    CabeceraTextoNormal(value = "PROPIEDAD")
+    TextoNormal(
+        "Usted no puede declarar propiedad intelectual o exclusiva a " +
+                "ninguno de nuestros productos, modificado o sin modificar. Todos " +
+                "los productos son propiedad  de los proveedores del contenido. " +
+                "En caso de que no se especifique lo contrario, nuestros productos " +
+                "se proporcionan  sin ningún tipo de garantía, expresa o implícita. " +
+                "En ningún esta compañía será  responsables de ningún daño incluyendo, " +
+                "pero no limitado a, daños directos, indirectos, especiales, fortuitos o " +
+                "consecuentes u otras pérdidas resultantes del uso o de la imposibilidad de " +
+                "utilizar nuestros productos.",
+        textAlign = TextAlign.Justify
+    )
+}
+
+//endregion
+
+//region TextFields
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CampoTextoUser(
@@ -240,6 +410,48 @@ fun CampoContraseñaUnico(
 
 }
 
+//endregion
+
+//region Botones
+@Composable
+fun BotonInhabilitado(
+    textoBoton: String,
+    accion: () -> Unit,
+    botonActivo: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = { accion() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Intenso3
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        enabled = botonActivo
+    ) {
+        Text(textoBoton)
+    }
+}
+
+@Composable
+fun BotonHabilitado(textoBoton: String, accion: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        onClick = { accion() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Intenso3
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Text(textoBoton)
+    }
+}
+
+//endregion
+
+//region Combos, Radio, otros
 @Composable
 fun EleccionUsuario(viewmodel: AppViewModel) {
     val radioOptions = listOf("Consumidor", "Ofertante")
@@ -272,279 +484,115 @@ fun EleccionUsuario(viewmodel: AppViewModel) {
         }
     }
 }
-
-
-
-    @Composable
-    fun CajaChequeo(
-        politicaMostrado: MutableState<Boolean>,
-        terminosMostrado: MutableState<Boolean>,
-        chequeoActivo: MutableState<Boolean>
+@Composable
+fun CajaChequeo(
+    politicaMostrado: MutableState<Boolean>,
+    terminosMostrado: MutableState<Boolean>,
+    chequeoActivo: MutableState<Boolean>
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(56.dp)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+
+        Checkbox(
+            checked = chequeoActivo.value,
+            onCheckedChange = { chequeoActivo.value = !chequeoActivo.value },
+            colors = CheckboxDefaults.colors(Intenso3)
+        )
+
+        TextoClicableTerminosPolitica(politicaMostrado, terminosMostrado)
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoMuchoTexto(
+    textoCabecera: String,
+    cuerpo: @Composable () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = {
+            onDismiss()
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(15.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(56.dp)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth(0.95f)
+                .border(1.dp, color = Suave2)
         ) {
-
-            Checkbox(
-                checked = chequeoActivo.value,
-                onCheckedChange = { chequeoActivo.value = !chequeoActivo.value },
-                colors = CheckboxDefaults.colors(Intenso3)
-            )
-
-            TextoClicableTerminosPolitica(politicaMostrado, terminosMostrado)
-        }
-    }
-
-    @Composable
-    fun TextoClicableTerminosPolitica(
-        politicaMostrado: MutableState<Boolean>,
-        terminosMostrado: MutableState<Boolean>
-    ) {
-        val textoInicial = "Al continuar aceptas nuestra "
-        val textoPoliticaPrivacidad = "Política de privacidad"
-        val textoConsecuente = " y "
-        val terminosYCondicionesTexto = "Términos de Uso"
-
-        val annotatedString = buildAnnotatedString {
-            append(textoInicial)
-            append(TextoClicable(texto = textoPoliticaPrivacidad))
-            append(textoConsecuente)
-            append(TextoClicable(texto = terminosYCondicionesTexto))
-        }
-
-
-        ClickableText(text = annotatedString, onClick = { offset ->
-            annotatedString.getStringAnnotations(offset, offset)
-                .firstOrNull()?.also { span ->
-                    if (span.item == "Términos de Uso") {
-                        terminosMostrado.value = true
-                    }
-                    if (span.item == "Política de privacidad") {
-                        politicaMostrado.value = true
-                    }
-                }
-
-        })
-    }
-
-    @Composable
-    fun TextoClicable(texto: String): AnnotatedString {
-        val annotatedString = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = Intenso2)) {
-                pushStringAnnotation(tag = texto, annotation = texto)
-                append(texto)
-            }
-        }
-
-        return annotatedString
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun DialogoMuchoTexto(
-        textoCabecera: String,
-        cuerpo: @Composable () -> Unit,
-        onDismiss: () -> Unit
-    ) {
-        Dialog(
-            onDismissRequest = {
-                onDismiss()
-            },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
-        ) {
-            Card(
-                shape = RoundedCornerShape(15.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .border(1.dp, color = Suave2)
-            ) {
-                Scaffold(
-                    topBar = {
-                        TopAppBar(title = { Text(textoCabecera) })
-                    },
-                    bottomBar = {
-                        Button(
-                            onClick = { onDismiss() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                        ) {
-                            Text("Cerrar")
-                        }
-                    }
-                ) { contentPadding ->
-                    LazyColumn(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(contentPadding)
-                            .padding(16.dp)
+            Scaffold(
+                topBar = {
+                    TopAppBar(title = { Text(textoCabecera) })
+                },
+                bottomBar = {
+                    Button(
+                        onClick = { onDismiss() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
                     ) {
-                        item {
-                            cuerpo()
-                        }
+                        Text("Cerrar")
+                    }
+                }
+            ) { contentPadding ->
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding)
+                        .padding(16.dp)
+                ) {
+                    item {
+                        cuerpo()
                     }
                 }
             }
-
         }
+
     }
+}
 
-    @Composable
-    fun TextoCambiarTipoRegistro(
-        textoNormal: String,
-        textoEnlace: String,
-        accionEnlace: () -> Unit
+//endregion
+
+@Composable
+public fun ExpandibleCabecera(textoCabecera: String) {
+    var expanded by remember { mutableStateOf(false) }
+    Row(
+        modifier = Modifier
+            .padding(12.dp)
+            .animateContentSize()
     ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(12.dp)
+        ) {
+            CabeceraTextoNormal(value = textoCabecera)
 
-        var annotatedString = buildAnnotatedString {
-            append(textoEnlace)
-            append(TextoClicable(texto = textoNormal))
+            if (expanded) {
+                Text(text = ("Co,pose ipsum color sit laxy").repeat(4))
+            }
         }
 
-        ClickableText(
-            text = annotatedString,
-            onClick = { offset ->
-                annotatedString.getStringAnnotations(offset, offset)
-                    .firstOrNull()?.also { span ->
-                        if (span.item == textoNormal) {
-                            accionEnlace()
-                        }
-
-                    }
-
-            },
-
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription =
+                if (expanded) {
+                    "show less"
+                } else {
+                    "show more"
+                }
             )
-    }
-
-    @Composable
-    fun BotonInhabilitado(
-        textoBoton: String,
-        accion: () -> Unit,
-        botonActivo: Boolean,
-        modifier: Modifier = Modifier
-    ) {
-        Button(
-            onClick = { accion() },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Intenso3
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            enabled = botonActivo
-        ) {
-            Text(textoBoton)
         }
     }
-
-    @Composable
-    fun BotonHabilitado(textoBoton: String, accion: () -> Unit, modifier: Modifier = Modifier) {
-        Button(
-            onClick = { accion() },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Intenso3
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(textoBoton)
-        }
-    }
-
-
-    @Composable
-    fun CuerpoPoliticaPrivacidad() {
-        TextoNormal(
-            value = "Esta Política de Privacidad describe cómo " +
-                    "Market Onuba recopila, utiliza y " +
-                    "comparte información personal de los usuarios de nuestra aplicación " +
-                    "móvil/sitio web/servicio (en adelante, \"Servicio\"). Al utilizar " +
-                    "nuestro Servicio, aceptas las prácticas descritas en esta Política de Privacidad.",
-            textAlign = TextAlign.Justify
-        )
-        CabeceraTextoNormal(value = "Información Recopilada")
-        TextoNormal(
-            "Podemos recopilar información personal identificable, " +
-                    "como tu nombre, dirección de correo electrónico, dirección postal, " +
-                    "número de teléfono, información de pago, y cualquier otra información " +
-                    "que nos proporciones al utilizar nuestro Servicio. También podemos " +
-                    "recopilar información no identificable, como tu dirección IP, tipo de " +
-                    "navegador, proveedor de servicios de Internet, páginas de referencia/salida " +
-                    "y la fecha/hora de acceso",
-            textAlign = TextAlign.Justify
-        )
-        CabeceraTextoNormal(value = "Uso de la Información")
-        TextoNormal(
-            value = "Podemos recopilar información personal identificable, " +
-                    "como tu nombre, dirección de correo electrónico, dirección postal, " +
-                    "número de teléfono, información de pago, y cualquier otra información " +
-                    "que nos proporciones al utilizar nuestro Servicio. También podemos " +
-                    "recopilar información no identificable, como tu dirección IP, " +
-                    "tipo de navegador, proveedor de servicios de Internet, páginas de " +
-                    "referencia/salida y la fecha/hora de acceso.",
-            textAlign = TextAlign.Justify
-        )
-        CabeceraTextoNormal(value = "Seguridad de la Información")
-        TextoNormal(
-            "Nos esforzamos por proteger la seguridad de tu " +
-                    "información personal y tomamos medidas razonables para " +
-                    "evitar el acceso no autorizado, el uso, la divulgación o " +
-                    "la alteración de tu información. Sin embargo, ninguna transmisión de " +
-                    "datos por Internet o método de almacenamiento electrónico es 100% " +
-                    "seguro, por lo que no podemos garantizar su seguridad absoluta.",
-            textAlign = TextAlign.Justify
-        )
-    }
-
-    @Composable
-    fun CuerpoTerminosUso() {
-        CabeceraTextoNormal(value = "INFORMACIÓN RELEVANTE")
-        TextoNormal(
-            "Es requisito necesario para la adquisición de " +
-                    "los productos que se ofrecen en este sitio, que lea y " +
-                    "acepte los siguientes Términos y Condiciones que a " +
-                    "continuación se redactan. El uso de nuestros servicios " +
-                    "así como la compra de nuestros productos implicará que " +
-                    "usted ha leído y aceptado los Términos y Condiciones " +
-                    "de Uso en el presente documento. Todas los productos  " +
-                    "que son ofrecidos por nuestro sitio web pudieran ser creadas, " +
-                    "cobradas, enviadas o presentadas por una página web tercera y " +
-                    "en tal caso estarían sujetas a sus propios Términos y Condiciones. " +
-                    "En algunos casos, para adquirir un producto, será necesario el " +
-                    "registro por parte del usuario, con ingreso de datos personales " +
-                    "fidedignos y definición de una contraseña.",
-            textAlign = TextAlign.Justify
-        )
-        CabeceraTextoNormal(value = "USO NO AUTORIZADO")
-        TextoNormal(
-            "En caso de que aplique (para venta de software, templetes, " +
-                    "u otro producto de diseño y programación) usted no puede " +
-                    "colocar uno de nuestros productos, modificado o sin modificar, " +
-                    "en un CD, sitio web o ningún otro medio y ofrecerlos para la redistribución " +
-                    "o la reventa de ningún tipo.",
-            textAlign = TextAlign.Justify
-        )
-        CabeceraTextoNormal(value = "PROPIEDAD")
-        TextoNormal(
-            "Usted no puede declarar propiedad intelectual o exclusiva a " +
-                    "ninguno de nuestros productos, modificado o sin modificar. Todos " +
-                    "los productos son propiedad  de los proveedores del contenido. " +
-                    "En caso de que no se especifique lo contrario, nuestros productos " +
-                    "se proporcionan  sin ningún tipo de garantía, expresa o implícita. " +
-                    "En ningún esta compañía será  responsables de ningún daño incluyendo, " +
-                    "pero no limitado a, daños directos, indirectos, especiales, fortuitos o " +
-                    "consecuentes u otras pérdidas resultantes del uso o de la imposibilidad de " +
-                    "utilizar nuestros productos.",
-            textAlign = TextAlign.Justify
-        )
-    }
-
-
+}

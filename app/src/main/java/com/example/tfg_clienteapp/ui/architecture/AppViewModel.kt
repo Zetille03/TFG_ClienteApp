@@ -1,14 +1,15 @@
 package com.example.tfg_clienteapp.ui.architecture
 
-import android.app.Application
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import com.example.tfg_clienteapp.MainActivity
+import androidx.navigation.NavHostController
 import com.example.tfg_clienteapp.model.Consumidor
+import com.example.tfg_clienteapp.model.Ofertante
 import com.example.tfg_clienteapp.retrofit.ConsumidorAPI
+import com.example.tfg_clienteapp.retrofit.OfertanteAPI
 import com.example.tfg_clienteapp.retrofit.RetrofitService
+import com.example.tfg_clienteapp.ui.data.Pantallas
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,8 +17,9 @@ import kotlinx.coroutines.flow.update
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.create
 
-class AppViewModel(public val context: Context): ViewModel()  {
+class AppViewModel(public val context: Context, public val navigator: NavHostController): ViewModel()  {
     private val _consumidorUiState: MutableStateFlow<ConsumidorUiState> = MutableStateFlow(ConsumidorUiState())
     val consumidorUiState: StateFlow<ConsumidorUiState> = _consumidorUiState.asStateFlow()
 
@@ -27,10 +29,22 @@ class AppViewModel(public val context: Context): ViewModel()  {
     private val _logeoUiState: MutableStateFlow<LogeoUiState> = MutableStateFlow(LogeoUiState())
     val logeoUiState: StateFlow<LogeoUiState> = _logeoUiState.asStateFlow()
 
+    //region RETROFIT SERVICE VARIABLES
     private val retrofitService:RetrofitService = RetrofitService()
 
     private val consumidorAPI: ConsumidorAPI = retrofitService.retrofit.create(ConsumidorAPI::class.java)
 
+    private val ofertanteAPI: OfertanteAPI = retrofitService.retrofit.create(OfertanteAPI::class.java)
+
+    //endregion
+
+    public fun setIdUser(valor: Int){
+        _logeoUiState.update {
+            it.copy(
+                idUsuario = valor
+            )
+        }
+    }
 
     public fun setUser(valor: String){
         _logeoUiState.update {
@@ -87,6 +101,7 @@ class AppViewModel(public val context: Context): ViewModel()  {
         }
     }
 
+    //region SIGN IN/SIGN UP
 
     fun isValidEmail(email: String): Boolean {
         val emailRegex = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$")
@@ -104,6 +119,11 @@ class AppViewModel(public val context: Context): ViewModel()  {
     fun registroUsuarioValido(): Boolean{
         return isValidPassword(logeoUiState.value.password)
                 && isValidEmail(logeoUiState.value.email)
+                && isValidUser(logeoUiState.value.nombreUsuario)
+    }
+
+    fun loginUsuarioValido():Boolean{
+        return isValidPassword(logeoUiState.value.password)
                 && isValidUser(logeoUiState.value.nombreUsuario)
     }
 
@@ -125,7 +145,8 @@ class AppViewModel(public val context: Context): ViewModel()  {
                     Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
 
                 }else{
-                    Toast.makeText(context,"Usuario registrado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Consumidor registrado", Toast.LENGTH_LONG).show()
+                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
                 }
             }
 
@@ -133,8 +154,32 @@ class AppViewModel(public val context: Context): ViewModel()  {
         })
     }
 
-    public fun postOfertante(usuario: String, email: String, contra: String){
+    public fun postOfertante(){
+        val o = Ofertante()
+        o.username = logeoUiState.value.nombreUsuario;
+        o.email = logeoUiState.value.email;
+        o.password = logeoUiState.value.password;
 
+        val hash = o.hashCode();
+        o.password = hash.toString()
+
+        ofertanteAPI.save(o).enqueue(object: Callback<Ofertante>{
+            override fun onFailure(p0: Call<Ofertante>, p1: Throwable) {
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onResponse(p0: Call<Ofertante>, p1: Response<Ofertante>) {
+                if(p1.body()==null){
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+
+                }else{
+                    Toast.makeText(context,"Ofertante registrado", Toast.LENGTH_LONG).show()
+                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
+                }
+            }
+
+
+        })
     }
 
     fun comprobarSigninConsumidor() {
@@ -143,13 +188,15 @@ class AppViewModel(public val context: Context): ViewModel()  {
         c.password = _logeoUiState.value.password
         val hash = c.hashCode()
         c.password = hash.toString()
-        consumidorAPI.getConsumidorLogIn(c.username,c.password).enqueue(object: Callback<Consumidor>{
+        consumidorAPI.comprobarLogIn(c.username,c.password).enqueue(object: Callback<Consumidor>{
             override fun onResponse(p0: Call<Consumidor>, p1: Response<Consumidor>) {
                 if(p1.body()==null){
                     Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
 
                 }else{
-                    Toast.makeText(context,"Usuario registrado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_LONG).show()
+                    setIdUser(p1.body()!!.idConsumidor)
+                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
                 }
             }
 
@@ -159,6 +206,32 @@ class AppViewModel(public val context: Context): ViewModel()  {
 
         })
     }
+
+    fun comprobarSigninOfertante() {
+        val o =  Ofertante()
+        o.username = _logeoUiState.value.nombreUsuario
+        o.password = _logeoUiState.value.password
+        val hash = o.hashCode()
+        o.password = hash.toString()
+        ofertanteAPI.comprobarLogIn(o.username,o.password).enqueue(object: Callback<Ofertante>{
+            override fun onResponse(p0: Call<Ofertante>, p1: Response<Ofertante>) {
+                if(p1.body()==null){
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_LONG).show()
+                    setIdUser(p1.body()!!.idOfertante)
+                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
+                }
+            }
+
+            override fun onFailure(p0: Call<Ofertante>, p1: Throwable) {
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+            }
+
+        })
+    }
+
+    //endregion
 
 
 }

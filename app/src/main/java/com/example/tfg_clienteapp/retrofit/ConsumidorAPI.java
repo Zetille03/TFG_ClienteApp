@@ -4,7 +4,6 @@ import com.example.tfg_clienteapp.model.Consumidor;
 
 import java.util.List;
 
-import kotlin.ParameterName;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -17,7 +16,7 @@ public interface ConsumidorAPI {
     Call<List<Consumidor>> getAllConsumidores();
 
     @GET("/consumidor/comprobar-login")
-    Call<Consumidor> getConsumidorLogIn(@Query("user") String usuario, @Query("password") String contraseña);
+    Call<Consumidor> comprobarLogIn(@Query("user") String usuario, @Query("password") String contraseña);
 
     @POST("/consumidor/save")
     Call<Consumidor> save(@Body Consumidor consumidor);

@@ -1,6 +1,7 @@
 package com.example.tfg_clienteapp.ui.architecture
 
 data class LogeoUiState(
+    val idUsuario: Int = 0,
     val tipoUsuario: String ="",
     val nombreUsuario: String ="",
     val email: String = "",

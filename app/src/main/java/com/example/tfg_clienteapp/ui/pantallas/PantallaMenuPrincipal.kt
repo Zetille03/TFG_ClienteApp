@@ -54,6 +54,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.tfg_clienteapp.R
+import com.example.tfg_clienteapp.ui.architecture.AppViewModel
+import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabecera
 import com.example.tfg_clienteapp.ui.data.NavigationItem
 import com.example.tfg_clienteapp.ui.data.Pantallas
 import kotlinx.coroutines.launch
@@ -61,7 +63,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaMenuPrincipal(navController: NavController){
+fun PantallaMenuPrincipal(navController: NavController, appViewModel: AppViewModel){
     val items = listOf(
         NavigationItem(
             title = "Mis actividades",
@@ -86,7 +88,8 @@ fun PantallaMenuPrincipal(navController: NavController){
         mutableStateOf(0)
     }
     val scope = rememberCoroutineScope()
-    val itemsCard = listOf("Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7")
+
+    val nombreUsuario = appViewModel.logeoUiState.value.nombreUsuario
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -133,7 +136,7 @@ fun PantallaMenuPrincipal(navController: NavController){
             Scaffold(
                 topBar = {
                      TopAppBar(
-                         title = { Text("TODO MENU") },
+                         title = { Text("Bienvenido, $nombreUsuario") },
                          navigationIcon = {
                              IconButton(onClick = { scope.launch {
                                         drawerState.open()
@@ -146,14 +149,15 @@ fun PantallaMenuPrincipal(navController: NavController){
                     
                 }
             ){paddingValues->
-                LazyRow(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
+                Column(
+                    modifier = Modifier.padding(paddingValues)
                 ) {
-                    itemsIndexed(itemsCard) { index, item ->
-                        CardItem(item,Modifier.padding(paddingValues))
-                    }
+                    ExpandibleCabecera(textoCabecera = "Recientes")
+                    ExpandibleCabecera(textoCabecera = "Recientes")
+                    ExpandibleCabecera(textoCabecera = "Recientes")
+
                 }
+
             }
         }
 
@@ -163,44 +167,3 @@ fun PantallaMenuPrincipal(navController: NavController){
 
 }
 
-@Composable
-fun CardItem(itemText: String,modifier: Modifier = Modifier,){
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .width(200.dp)
-            .padding(16.dp)
-            .clickable {
-
-            }
-
-        ,
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp,
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-
-//            Image(
-//                painterResource(id = R.drawable)
-//            )
-            Text(
-                text = itemText,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Descripción de la tarjeta. Esto es un ejemplo de texto de descripción que puede ser bastante largo y ocupar varias líneas.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-        }
-    }
-}

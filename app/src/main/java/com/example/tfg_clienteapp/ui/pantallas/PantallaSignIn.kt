@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.tfg_clienteapp.R
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.BotonHabilitado
+import com.example.tfg_clienteapp.ui.componentes.BotonInhabilitado
 import com.example.tfg_clienteapp.ui.componentes.CabeceraTextoNormal
 import com.example.tfg_clienteapp.ui.componentes.CampoContraseñaUnico
 import com.example.tfg_clienteapp.ui.componentes.CampoTextoUser
@@ -69,15 +70,16 @@ fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
                 "¿No tienes cuenta?",
                 "Registrate aquí.",
                 accionEnlace = accionNavigator)
-            BotonHabilitado(
-                textoBoton = "Sign Up",
+            BotonInhabilitado(
+                textoBoton = "Sign In",
                 accion = {
                     if(logeoUiState.tipoUsuario.equals("Consumidor")){
-//                    viewModel.comprobarSignin()
+                        viewModel.comprobarSigninConsumidor()
                     }else{
-
+                        viewModel.comprobarSigninOfertante()
                     }
                 },
+                botonActivo = viewModel.loginUsuarioValido(),
                 modifier = Modifier.padding(start = 40.dp, end = 40.dp)
             )
         }

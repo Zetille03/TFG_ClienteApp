@@ -25,7 +25,7 @@ import com.example.tfg_clienteapp.ui.data.Pantallas
 
 @Composable
 fun Aplicacion(navController: NavHostController = rememberNavController()){
-    val appViewModel = AppViewModel(MyApp.instance)
+    val appViewModel = AppViewModel(MyApp.instance,navController)
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -50,7 +50,7 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
                 PantallaSignIn(accionNavigator = {navController.navigate(Pantallas.PantallaSignUp.name)},appViewModel)
             }
             composable(route = Pantallas.PantallaMenuPrincipal.name){
-                PantallaMenuPrincipal(navController)
+                PantallaMenuPrincipal(navController,appViewModel)
             }
         }
     }

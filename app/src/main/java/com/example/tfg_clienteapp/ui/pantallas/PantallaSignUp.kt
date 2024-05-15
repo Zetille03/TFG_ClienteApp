@@ -95,10 +95,10 @@ fun PantallaSignUp(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
             BotonInhabilitado(
                 textoBoton = "Sign Up",
                 accion = {
-                         if(logeoUiState.tipoUsuario.equals("Consumidor")){
+                         if(logeoUiState.tipoUsuario == "Consumidor"){
                             viewModel.postConsumidor()
                          }else{
-
+                            viewModel.postOfertante()
                          }
                      },
                 botonActivo = checkboxPoliticas.value && viewModel.registroUsuarioValido(),
