@@ -1,31 +1,22 @@
-package com.example.tfg_clienteapp.ui.pantallas
+package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.SportsBaseball
+import androidx.compose.material.icons.filled.SportsCricket
 import androidx.compose.material.icons.filled.SportsTennis
 import androidx.compose.material.icons.outlined.SportsBaseball
+import androidx.compose.material.icons.outlined.SportsCricket
 import androidx.compose.material.icons.outlined.SportsTennis
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DismissibleDrawerSheet
-import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -46,14 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.tfg_clienteapp.R
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabecera
 import com.example.tfg_clienteapp.ui.data.NavigationItem
@@ -72,10 +59,16 @@ fun PantallaMenuPrincipal(navController: NavController, appViewModel: AppViewMod
             route = Pantallas.PantallaInicio.name
         ),
         NavigationItem(
-            title = "Mis ofertas",
+            title = "Actividades como participante",
             selectedIcon = Icons.Filled.SportsBaseball,
             unselectedIcon = Icons.Outlined.SportsBaseball,
             route = Pantallas.PantallaInicio.name
+        ),
+        NavigationItem(
+            title="Tablon de anuncios",
+            selectedIcon = Icons.Filled.SportsCricket,
+            unselectedIcon = Icons.Outlined.SportsCricket,
+            route = Pantallas.PantallaTablonConsumidor.name
         )
 
     )
@@ -93,7 +86,8 @@ fun PantallaMenuPrincipal(navController: NavController, appViewModel: AppViewMod
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background,
+
     ){
         ModalNavigationDrawer(
             drawerContent = {
@@ -144,19 +138,20 @@ fun PantallaMenuPrincipal(navController: NavController, appViewModel: AppViewMod
                              }) {
                                  Icon(imageVector = Icons.Default.Menu, contentDescription = "Boton Menu")
                              }
-                         }
+                         },
+                         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
                      )
                     
                 }
+
             ){paddingValues->
                 Column(
-                    modifier = Modifier.padding(paddingValues)
-                ) {
-                    ExpandibleCabecera(textoCabecera = "Recientes")
-                    ExpandibleCabecera(textoCabecera = "Recientes")
-                    ExpandibleCabecera(textoCabecera = "Recientes")
-
-                }
+                    modifier = Modifier.padding(paddingValues),
+                    content = {
+                        ExpandibleCabecera(textoCabecera = "Recientes")
+                        ExpandibleCabecera(textoCabecera = "Favoritos")
+                    }
+                )
 
             }
         }

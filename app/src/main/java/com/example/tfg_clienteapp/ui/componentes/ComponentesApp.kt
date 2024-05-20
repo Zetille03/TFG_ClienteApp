@@ -3,6 +3,7 @@ package com.example.tfg_clienteapp.ui.componentes
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -47,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -63,6 +65,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.tfg_clienteapp.R
+import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.architecture.LogeoUiState
 import com.example.tfg_clienteapp.ui.theme.*
@@ -594,5 +598,87 @@ public fun ExpandibleCabecera(textoCabecera: String) {
                 }
             )
         }
+    }
+}
+
+fun SeleccionImagenActividad(categoria: String): Int {
+    when(categoria){
+        "deportes"-> return R.drawable.deportesimage
+        "naturaleza"-> return R.drawable.naturalezaimage
+        "educacion"-> return R.drawable.educacionimage
+        "otros"-> return R.drawable.otrosimage
+        else->{
+            return 0
+        }
+    }
+}
+
+
+@Composable
+fun TablonActividadesOfertantesCard(actividadOfertante: ActividadOfertante){
+    Card(
+        modifier = Modifier.fillMaxWidth().height(200.dp)
+    ){
+        Column{
+            Image(
+                painter = painterResource(SeleccionImagenActividad(actividadOfertante.categoria)),
+                contentDescription = actividadOfertante.titulo,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+            Text(
+                text = actividadOfertante.titulo,
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.headlineSmall
+            )
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoAñadirActividadConsumidor(){
+    Dialog(
+        onDismissRequest = {
+
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.95f)
+                .border(1.dp, color = Suave2)
+        ) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(title = { Text("Añadir nueva actividad") })
+                },
+                bottomBar = {
+                    Button(
+                        onClick = {  },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Text("Cerrar")
+                    }
+                }
+            ) { contentPadding ->
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding)
+                        .padding(16.dp)
+                ) {
+
+                }
+            }
+        }
+
     }
 }

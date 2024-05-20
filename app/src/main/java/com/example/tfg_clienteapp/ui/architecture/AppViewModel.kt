@@ -4,9 +4,15 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.example.tfg_clienteapp.model.ActividadConsumidor
+import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.model.Consumidor
+import com.example.tfg_clienteapp.model.ConsumidorActividadOfertante
 import com.example.tfg_clienteapp.model.Ofertante
+import com.example.tfg_clienteapp.retrofit.ActividadConsumidorAPI
+import com.example.tfg_clienteapp.retrofit.ActividadOfertanteAPI
 import com.example.tfg_clienteapp.retrofit.ConsumidorAPI
+import com.example.tfg_clienteapp.retrofit.ConsumidorActividadOfertanteAPI
 import com.example.tfg_clienteapp.retrofit.OfertanteAPI
 import com.example.tfg_clienteapp.retrofit.RetrofitService
 import com.example.tfg_clienteapp.ui.data.Pantallas
@@ -20,6 +26,9 @@ import retrofit2.Response
 import retrofit2.create
 
 class AppViewModel(public val context: Context, public val navigator: NavHostController): ViewModel()  {
+
+    //region VARIABLES VIEWMODEL
+
     private val _consumidorUiState: MutableStateFlow<ConsumidorUiState> = MutableStateFlow(ConsumidorUiState())
     val consumidorUiState: StateFlow<ConsumidorUiState> = _consumidorUiState.asStateFlow()
 
@@ -29,6 +38,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     private val _logeoUiState: MutableStateFlow<LogeoUiState> = MutableStateFlow(LogeoUiState())
     val logeoUiState: StateFlow<LogeoUiState> = _logeoUiState.asStateFlow()
 
+    //endregion
+
     //region RETROFIT SERVICE VARIABLES
     private val retrofitService:RetrofitService = RetrofitService()
 
@@ -36,7 +47,17 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     private val ofertanteAPI: OfertanteAPI = retrofitService.retrofit.create(OfertanteAPI::class.java)
 
+    private val actividadConsumidorAPI: ActividadConsumidorAPI = retrofitService.retrofit.create(ActividadConsumidorAPI::class.java)
+
+    private val actividadOfertanteAPI: ActividadOfertanteAPI = retrofitService.retrofit.create(ActividadOfertanteAPI::class.java)
+
+    private val consumidorActividadOfertanteAPI: ConsumidorActividadOfertanteAPI = retrofitService.retrofit.create(ConsumidorActividadOfertanteAPI::class.java)
+
     //endregion
+
+    //region UISTATE
+
+    //region LOGEO
 
     public fun setIdUser(valor: Int){
         _logeoUiState.update {
@@ -101,6 +122,71 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+    //endregion
+
+    //region Consumidor
+
+    fun setListaMisActividadesConsumidor(lista: List<ActividadConsumidor>){
+        _consumidorUiState.update {
+            it.copy(
+                listaMisActividades = lista
+            )
+        }
+    }
+
+    fun setListaActividadesApuntadoConsumidor(lista: List<ActividadOfertante>){
+        _consumidorUiState.update {
+            it.copy(
+                listaActividadesApuntado = lista
+            )
+        }
+    }
+
+    fun setListaActividadesOfertantesDeConsumidor(lista: List<ActividadOfertante>){
+        _consumidorUiState.update {
+            it.copy(
+                listaActividadesOfertantes = lista
+            )
+        }
+    }
+
+    //endregion
+
+    //region Ofertante
+
+    fun setListaMisActividadesOfertante(lista: List<ActividadOfertante>){
+        _ofertanteUiSate.update {
+            it.copy(
+                listaMisActividades = lista
+            )
+        }
+    }
+
+    fun setListaActividadesApuntadoOfertante(lista: List<ActividadConsumidor>){
+        _ofertanteUiSate.update {
+            it.copy(
+                listaActividadesApuntado = lista
+            )
+        }
+    }
+
+    fun setListaActividadesConsumidoresDeOfertante(lista: List<ActividadConsumidor>){
+        _ofertanteUiSate.update {
+            it.copy(
+                listaActividadesAConsumidores = lista
+            )
+        }
+    }
+
+
+    //endregion
+
+    //endregion
+
+    //region
+
+    //region FUNCIONES
+
     //region SIGN IN/SIGN UP
 
     fun isValidEmail(email: String): Boolean {
@@ -146,7 +232,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
                 }else{
                     Toast.makeText(context,"Consumidor registrado", Toast.LENGTH_LONG).show()
-                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
+                    navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
                 }
             }
 
@@ -174,7 +260,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
                 }else{
                     Toast.makeText(context,"Ofertante registrado", Toast.LENGTH_LONG).show()
-                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
+                    navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
+
                 }
             }
 
@@ -196,7 +283,22 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 }else{
                     Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_LONG).show()
                     setIdUser(p1.body()!!.idConsumidor)
-                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
+                    navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
+                    actividadOfertanteAPI.allActividadesOfertantes.enqueue(object: Callback<List<ActividadOfertante>>{
+                        override fun onResponse(
+                            p0: Call<List<ActividadOfertante>>,
+                            p1: Response<List<ActividadOfertante>>
+                        ) {
+                            if(p1.body()!=null){
+                                setListaActividadesOfertantesDeConsumidor(p1.body()!!)
+                            }
+                        }
+
+                        override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
+                            TODO("Not yet implemented")
+                        }
+
+                    })
                 }
             }
 
@@ -220,7 +322,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 }else{
                     Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_LONG).show()
                     setIdUser(p1.body()!!.idOfertante)
-                    navigator.navigate(Pantallas.PantallaMenuPrincipal.name)
+                    navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
+
                 }
             }
 
@@ -230,6 +333,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
         })
     }
+
+    //endregion
 
     //endregion
 

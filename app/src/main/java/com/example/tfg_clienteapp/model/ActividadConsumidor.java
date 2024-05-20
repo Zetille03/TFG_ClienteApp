@@ -6,6 +6,16 @@ import java.util.Objects;
 public class ActividadConsumidor {
     private int idActividadConsumidor;
 
+    private String titulo;
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     private String descripcion;
 
     private Timestamp dueDate;
@@ -79,24 +89,25 @@ public class ActividadConsumidor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActividadConsumidor that = (ActividadConsumidor) o;
-        return idActividadConsumidor == that.idActividadConsumidor && numeroPlazas == that.numeroPlazas && Objects.equals(descripcion, that.descripcion) && Objects.equals(dueDate, that.dueDate) && Objects.equals(categoria, that.categoria) && Objects.equals(consumidor, that.consumidor) && Objects.equals(ofertanteActividadConsumidor, that.ofertanteActividadConsumidor);
+        return idActividadConsumidor == that.idActividadConsumidor && numeroPlazas == that.numeroPlazas && Objects.equals(titulo, that.titulo) && Objects.equals(descripcion, that.descripcion) && Objects.equals(dueDate, that.dueDate) && Objects.equals(categoria, that.categoria) && Objects.equals(consumidor, that.consumidor) && Objects.equals(ofertanteActividadConsumidor, that.ofertanteActividadConsumidor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idActividadConsumidor, descripcion, dueDate, categoria, numeroPlazas, consumidor, ofertanteActividadConsumidor);
+        return Objects.hash(idActividadConsumidor, titulo, descripcion, dueDate, categoria, numeroPlazas, consumidor, ofertanteActividadConsumidor);
     }
 
     @Override
     public String toString() {
         return "ActividadConsumidor{" +
                 "idActividadConsumidor=" + idActividadConsumidor +
+                ", titulo='" + titulo + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", dueDate=" + dueDate +
                 ", categoria='" + categoria + '\'' +
                 ", numeroPlazas=" + numeroPlazas +
-                ", consumidor=" + ((consumidor!=null)?consumidor.getIdConsumidor():"null") +
-                ", ofertanteActividadConsumidor=" +  ((ofertanteActividadConsumidor!=null)?ofertanteActividadConsumidor.getIdOfertante():"null") +
+                ", consumidor=" + consumidor +
+                ", ofertanteActividadConsumidor=" + ofertanteActividadConsumidor +
                 '}';
     }
 }

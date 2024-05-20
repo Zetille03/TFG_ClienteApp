@@ -7,7 +7,17 @@ import java.util.Objects;
 public class ActividadOfertante {
     private int idActividadOfertante;
 
+    private String titulo;
+
     private String descripcion;
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
     private Timestamp dueDate;
 

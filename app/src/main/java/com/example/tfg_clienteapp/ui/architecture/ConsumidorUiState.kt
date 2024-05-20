@@ -4,6 +4,7 @@ import com.example.tfg_clienteapp.model.ActividadConsumidor
 import com.example.tfg_clienteapp.model.ActividadOfertante
 
 data class ConsumidorUiState(
-    val listaMisActividades: ArrayList<ActividadConsumidor> = arrayListOf(),
-    val listaActividadesApuntado: ArrayList<ActividadOfertante> = arrayListOf()
+    val listaMisActividades: List<ActividadConsumidor> = arrayListOf(),
+    val listaActividadesApuntado: List<ActividadOfertante> = arrayListOf(),
+    val listaActividadesOfertantes: List<ActividadOfertante> = arrayListOf()
 )
