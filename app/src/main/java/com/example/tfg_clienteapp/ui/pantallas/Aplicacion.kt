@@ -14,8 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.tfg_clienteapp.MyApp
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
-import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMenuPrincipal
 import com.example.tfg_clienteapp.ui.data.Pantallas
+import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMenuPrincipalConsumidor
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMisActividadesConsumidor
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaTablonConsumidor
 
@@ -47,7 +47,7 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
                 PantallaSignIn(accionNavigator = {navController.navigate(Pantallas.PantallaSignUp.name)},appViewModel)
             }
             composable(route = Pantallas.PantallaMenuPrincipalConsumidor.name){
-                PantallaMenuPrincipal(navController,appViewModel)
+                PantallaMenuPrincipalConsumidor(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaTablonConsumidor.name ){
                 PantallaTablonConsumidor(navController,appViewModel)

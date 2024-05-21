@@ -59,12 +59,20 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     //region LOGEO
 
+    fun getIdUser(): Int {
+        return _logeoUiState.value.idUsuario;
+    }
+
     public fun setIdUser(valor: Int){
         _logeoUiState.update {
             it.copy(
                 idUsuario = valor
             )
         }
+    }
+
+    fun getUser(): String {
+        return _logeoUiState.value.nombreUsuario;
     }
 
     public fun setUser(valor: String){
@@ -75,12 +83,20 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+    fun getEmail(): String {
+        return _logeoUiState.value.email;
+    }
+
     public fun setEmail(valor: String){
         _logeoUiState.update {
             it.copy(
                 email = valor
             )
         }
+    }
+
+    fun getPassword(): String {
+        return _logeoUiState.value.password;
     }
 
     public fun setPassword(valor: String){
@@ -91,12 +107,20 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+    fun getTypeUser(): String {
+        return _logeoUiState.value.tipoUsuario;
+    }
+
     public fun setTipeUser(valor: String){
         _logeoUiState.update {
             it.copy(
                 tipoUsuario = valor
             )
         }
+    }
+
+    fun getUserValido(): Boolean {
+        return _logeoUiState.value.userValido;
     }
 
     public fun setUserValido(valor: Boolean){
@@ -107,6 +131,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+    fun getEmailValido(): Boolean {
+        return _logeoUiState.value.emailValido;
+    }
+
     public fun setEmailValido(valor: Boolean){
         _logeoUiState.update {
             it.copy(
@@ -114,6 +142,11 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             )
         }
     }
+
+    fun getEPasswordValido(): Boolean {
+        return _logeoUiState.value.passwordValido;
+    }
+
     public fun setPasswordValido(valor: Boolean){
         _logeoUiState.update {
             it.copy(
@@ -125,6 +158,20 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     //endregion
 
     //region Consumidor
+
+    fun getListaMisActividadesConsumidor(): List<ActividadConsumidor> {
+        return _consumidorUiState.value.listaMisActividades;
+    }
+
+    fun getListaActividadesApuntadoConsumidor(): List<ActividadOfertante> {
+        return _consumidorUiState.value.listaActividadesOfertantes;
+    }
+
+    fun getListaActividadesOfertanteDeConsumidor(): List<ActividadOfertante> {
+        return _consumidorUiState.value.listaActividadesOfertantes;
+    }
+
+
 
     fun setListaMisActividadesConsumidor(lista: List<ActividadConsumidor>){
         _consumidorUiState.update {
@@ -154,6 +201,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     //region Ofertante
 
+    fun getListaMisActividadesOfertante(): List<ActividadOfertante> {
+        return _ofertanteUiSate.value.listaMisActividades;
+    }
+
     fun setListaMisActividadesOfertante(lista: List<ActividadOfertante>){
         _ofertanteUiSate.update {
             it.copy(
@@ -162,12 +213,20 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+    fun getListaActividadesApuntadoOfertante(): List<ActividadConsumidor> {
+        return _ofertanteUiSate.value.listaActividadesApuntado;
+    }
+
     fun setListaActividadesApuntadoOfertante(lista: List<ActividadConsumidor>){
         _ofertanteUiSate.update {
             it.copy(
                 listaActividadesApuntado = lista
             )
         }
+    }
+
+    fun getListaActividadesConsumidoresDeOfertante(): List<ActividadConsumidor> {
+        return _ofertanteUiSate.value.listaActividadesAConsumidores;
     }
 
     fun setListaActividadesConsumidoresDeOfertante(lista: List<ActividadConsumidor>){
@@ -336,7 +395,32 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     //endregion
 
+    //region CONSUMIDOR
+
+    fun actualizarActividadesOfertantesDeConsumidores(){
+        actividadOfertanteAPI.allActividadesOfertantes.enqueue(object: Callback<List<ActividadOfertante>>{
+            override fun onResponse(
+                p0: Call<List<ActividadOfertante>>,
+                p1: Response<List<ActividadOfertante>>
+            ) {
+                if(p1.body()!=null){
+                    setListaActividadesOfertantesDeConsumidor(p1.body()!!)
+                }
+            }
+
+            override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
     //endregion
+
+
+    //endregion
+
+
 
 
 }
