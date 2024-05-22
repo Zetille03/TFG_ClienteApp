@@ -9,4 +9,5 @@
     <string name="pantalla_menu_ofertante">Pantalla Menu Ofertante</string>
     <string name="pantalla_tablon_consumidor">Pantalla Tablon Consumidor</string>
     <string name="pantalla_mis_actividades_consumidor">Pantalla Mis Actividades Consumidor</string>
+    <string name="pantalla_añadir_actividad">Pantalla Añadir Actividad</string>
 </resources>

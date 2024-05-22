@@ -23,9 +23,11 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.SportsBaseball
 import androidx.compose.material.icons.filled.SportsCricket
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material.icons.filled.SportsTennis
 import androidx.compose.material.icons.outlined.SportsBaseball
 import androidx.compose.material.icons.outlined.SportsCricket
+import androidx.compose.material.icons.outlined.SportsGymnastics
 import androidx.compose.material.icons.outlined.SportsTennis
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -197,6 +199,12 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
             selectedIcon = Icons.Filled.SportsCricket,
             unselectedIcon = Icons.Outlined.SportsCricket,
             route = Pantallas.PantallaTablonConsumidor.name
+        ),
+        NavigationItem(
+            title="Añadir actividad",
+            selectedIcon = Icons.Filled.SportsGymnastics,
+            unselectedIcon = Icons.Outlined.SportsGymnastics,
+            route = Pantallas.PantallaAñadirActividad.name
         )
 
     )

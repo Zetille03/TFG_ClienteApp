@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppViewModel){
@@ -49,10 +50,6 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
             )
 
         },
-        floatingActionButton = {
-            IconButton(onClick = { appViewModel.actualizarActividadesOfertantesDeConsumidores() }) {
-            Icon(Icons.Outlined.CloudSync, contentDescription = null)
-        }},
         content = { paddingValues ->
 
                 LazyColumn(

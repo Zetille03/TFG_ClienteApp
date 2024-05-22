@@ -38,6 +38,9 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     private val _logeoUiState: MutableStateFlow<LogeoUiState> = MutableStateFlow(LogeoUiState())
     val logeoUiState: StateFlow<LogeoUiState> = _logeoUiState.asStateFlow()
 
+    private val _actividadUiState: MutableStateFlow<ActividadUiState> = MutableStateFlow(ActividadUiState())
+    val actividadUiState: StateFlow<ActividadUiState> = _actividadUiState.asStateFlow()
+
     //endregion
 
     //region RETROFIT SERVICE VARIABLES
@@ -237,6 +240,82 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+
+    //endregion
+
+    //region Actividad
+
+    fun getTitulo(): String {
+        return _actividadUiState.value.titulo
+    }
+
+    fun setTitulo(valor: String){
+        _actividadUiState.update {
+            it.copy(
+                titulo = valor
+            )
+        }
+    }
+
+    fun getDescripcion(): String {
+        return _actividadUiState.value.descripcion
+    }
+
+    fun setDescripcion(valor: String){
+        _actividadUiState.update {
+            it.copy(
+                descripcion = valor
+            )
+        }
+    }
+
+    fun getNumeroPlazas(): Int {
+        return _actividadUiState.value.nPlazas
+    }
+
+    fun setNumeroPlazas(valor: Int){
+        _actividadUiState.update {
+            it.copy(
+                nPlazas = valor
+            )
+        }
+    }
+
+    fun getCategoria(): String {
+        return _actividadUiState.value.categoria
+    }
+
+    fun setCategoria(valor: String){
+        _actividadUiState.update {
+            it.copy(
+                categoria = valor
+            )
+        }
+    }
+
+    fun getFecha(): String {
+        return _actividadUiState.value.fecha
+    }
+
+    fun setFecha(valor: String){
+        _actividadUiState.update {
+            it.copy(
+                fecha = valor
+            )
+        }
+    }
+
+    fun getIdUsuario(): Int {
+        return _actividadUiState.value.idUsuario
+    }
+
+    fun setIdUsuario(valor: Int){
+        _actividadUiState.update {
+            it.copy(
+                idUsuario = valor
+            )
+        }
+    }
 
     //endregion
 

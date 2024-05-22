@@ -1,5 +1,7 @@
 package com.example.tfg_clienteapp.ui.pantallas
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,10 +17,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tfg_clienteapp.MyApp
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.data.Pantallas
+import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaAñadirActividad
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMenuPrincipalConsumidor
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMisActividadesConsumidor
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaTablonConsumidor
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Aplicacion(navController: NavHostController = rememberNavController()){
     val appViewModel = AppViewModel(MyApp.instance,navController)
@@ -54,6 +58,9 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
             }
             composable(route = Pantallas.PantallaMisActividadesConsumidor.name){
                 PantallaMisActividadesConsumidor(navController,appViewModel)
+            }
+            composable(route = Pantallas.PantallaAñadirActividad.name){
+                PantallaAñadirActividad(navController,appViewModel)
             }
 
         }

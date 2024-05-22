@@ -10,5 +10,6 @@ enum class Pantallas(@StringRes val title: Int) {
     PantallaMenuPrincipalConsumidor(title = R.string.pantalla_menu_consumidor),
     PantallaTablonConsumidor(title= R.string.pantalla_tablon_consumidor),
     PantallaMenuPrincipalOfertante(title = R.string.pantalla_menu_ofertante),
-    PantallaMisActividadesConsumidor(title=R.string.pantalla_mis_actividades_consumidor)
+    PantallaMisActividadesConsumidor(title=R.string.pantalla_mis_actividades_consumidor),
+    PantallaAñadirActividad(title=R.string.pantalla_añadir_actividad)
 }
