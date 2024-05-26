@@ -6,5 +6,9 @@ data class ActividadUiState(
     val nPlazas: Int = 0,
     val categoria : String = "",
     val fecha: String = "",
-    val idUsuario: Int = 0,
+    val tituloValido: Boolean = false,
+    val descripcionValido: Boolean = false,
+    val nPlazasValido: Boolean = false,
+    val categoriaValido: Boolean = false,
+    val fechaValido: Boolean = false
 )

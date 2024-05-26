@@ -17,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tfg_clienteapp.MyApp
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.data.Pantallas
-import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaAñadirActividad
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMenuPrincipalConsumidor
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaMisActividadesConsumidor
 import com.example.tfg_clienteapp.ui.pantallas.Consumidor.PantallaTablonConsumidor

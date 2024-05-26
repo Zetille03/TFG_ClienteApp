@@ -21,7 +21,7 @@ public interface ActividadConsumidorAPI {
     Call<ActividadConsumidor> save(@Body ActividadConsumidor actividadConsumidor);
 
     @GET("/actividad-consumidor/get-by-consumidor")
-    Call<List<ActividadConsumidor>> getActividadesConsumidoresByConsumidor();
+    Call<List<ActividadConsumidor>> getActividadesConsumidoresByConsumidor(@Query("consumidorId") int id);
 
     @DELETE("/actividad-consumidor/delete")
     Call<Void> deleteById(@Query("id") int id);

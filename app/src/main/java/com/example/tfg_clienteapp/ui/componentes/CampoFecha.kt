@@ -44,15 +44,19 @@ import java.util.Locale
 @Composable
 fun DatePickerWithDialog(
     appViewModel: AppViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    campoValido: Boolean
 ) {
     val dateState = rememberDatePickerState()
     val millisToLocalDate = dateState.selectedDateMillis?.let {
         convertMillisToLocalDate(it)
     }
     appViewModel.setFecha(millisToLocalDate?.let {
-        dateToTimestampString(millisToLocalDate)
+        dateToFormattedString(millisToLocalDate)
     } ?: "")
+    appViewModel.setFechaValido(appViewModel.isFechaValido(millisToLocalDate?.let {
+        dateToFormattedString(millisToLocalDate)
+    } ?: ""))
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -63,7 +67,7 @@ fun DatePickerWithDialog(
     ) {
         OutlinedTextField(
             value = appViewModel.getFecha(),
-            onValueChange = {appViewModel.setFecha(it)},
+            onValueChange = {},
             readOnly = true,
             trailingIcon = {
                 Icon(
@@ -81,7 +85,8 @@ fun DatePickerWithDialog(
                 focusedBorderColor = Intenso2,
                 focusedLabelColor = Intenso2,
                 cursorColor = Intenso2,
-            )
+            ),
+            isError = !campoValido
         )
 
         if (showDialog) {
@@ -112,40 +117,12 @@ fun DatePickerWithDialog(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun convertMillisToLocalDate(millis: Long) : LocalDate {
-    return Instant
-        .ofEpochMilli(millis)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate()
+fun convertMillisToLocalDate(millis: Long): LocalDate {
+    return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun convertMillisToLocalDateWithFormatter(date: LocalDate, dateTimeFormatter: DateTimeFormatter) : LocalDate {
-    //Convert the date to a long in millis using a dateformmater
-    val dateInMillis = LocalDate.parse(date.format(dateTimeFormatter), dateTimeFormatter)
-        .atStartOfDay(ZoneId.systemDefault())
-        .toInstant()
-        .toEpochMilli()
-
-    //Convert the millis to a localDate object
-    return Instant
-        .ofEpochMilli(dateInMillis)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate()
-}
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun dateToString(date: LocalDate): String {
-    val dateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
-    val dateInMillis = convertMillisToLocalDateWithFormatter(date, dateFormatter)
-    return dateFormatter.format(dateInMillis)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun dateToTimestampString(date: LocalDate): String {
-    val dateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
-    val instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant()
-    val timestamp = Timestamp.from(instant)
-    return dateFormatter.format(timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+fun dateToFormattedString(date: LocalDate): String {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
+    return dateFormatter.format(date)
 }

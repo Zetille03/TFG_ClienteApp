@@ -1,9 +1,10 @@
 package com.example.tfg_clienteapp.model;
 
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class ConsumidorActividadOfertante {
+public class ConsumidorActividadOfertante implements Serializable {
     private int idConsumidorActividadOfertante;
 
     private ActividadOfertante actividadOfertante;

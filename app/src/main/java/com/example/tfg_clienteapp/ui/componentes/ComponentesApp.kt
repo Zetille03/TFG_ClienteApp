@@ -289,7 +289,7 @@ fun CampoTextoUser(
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .padding(8.dp),
-        label = {Text(text = textoLabel)},
+        label = {Text(text = textoLabel, style = TextStyle(Color.Black))},
         colors = TextFieldDefaults.outlinedTextFieldColors(
            focusedBorderColor = Intenso2,
             focusedLabelColor = Intenso2,
@@ -329,7 +329,7 @@ fun CampoTextoEmail(
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .padding(8.dp),
-        label = {Text(text = textoLabel)},
+        label = {Text(text = textoLabel, style = TextStyle(Color.Black))},
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Intenso2,
             focusedLabelColor = Intenso2,
@@ -354,13 +354,13 @@ fun CampoTextoEmail(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampoTextoTitulo(appViewModel: AppViewModel, titulo: String){
+fun CampoTextoTitulo(appViewModel: AppViewModel, titulo: String,campoValido: Boolean){
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .padding(8.dp),
-        label = {Text(text = "Titulo")},
+        label = {Text(text = "Titulo", style = TextStyle(Color.Black))},
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Intenso2,
             focusedLabelColor = Intenso2,
@@ -369,7 +369,11 @@ fun CampoTextoTitulo(appViewModel: AppViewModel, titulo: String){
         keyboardOptions = KeyboardOptions.Default,
         value = titulo,
         onValueChange = {
-            if(it.length <= 255) appViewModel.setTitulo(it)
+            if(it.length <= 255){
+                appViewModel.setTitulo(it)
+                appViewModel.setTituloValido(appViewModel.isTituloValido(it))
+            }
+
         },
         supportingText = {
             Text(
@@ -377,19 +381,20 @@ fun CampoTextoTitulo(appViewModel: AppViewModel, titulo: String){
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End,
             )
-        }
+        },
+        isError = !campoValido
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampoTextoDescripcion(appViewModel: AppViewModel, descripcion: String){
+fun CampoTextoDescripcion(appViewModel: AppViewModel, descripcion: String,campoValido: Boolean){
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .padding(8.dp),
-        label = {Text(text = "Descripcion")},
+        label = {Text(text = "Descripcion", style = TextStyle(Color.Black))},
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Intenso2,
             focusedLabelColor = Intenso2,
@@ -397,7 +402,10 @@ fun CampoTextoDescripcion(appViewModel: AppViewModel, descripcion: String){
         ),
         value = descripcion,
         onValueChange = {
-            if(it.length <= 255) appViewModel.setDescripcion(it)
+            if(it.length <= 255) {
+                appViewModel.setDescripcion(it)
+                appViewModel.setDescripcionValido(appViewModel.isDescripcionValido(it))
+            }
         },
         supportingText = {
             Text(
@@ -405,19 +413,20 @@ fun CampoTextoDescripcion(appViewModel: AppViewModel, descripcion: String){
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End,
             )
-        }
+        },
+        isError = !campoValido
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampoNumeroPlazas(appViewModel: AppViewModel, nPlazas: Int){
+fun CampoNumeroPlazas(appViewModel: AppViewModel, nPlazas: Int,campoValido: Boolean){
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .padding(8.dp),
-        label = {Text(text = "Numero Plazas")},
+        label = {Text(text = "Numero Plazas", style = TextStyle(Color.Black))},
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Intenso2,
             focusedLabelColor = Intenso2,
@@ -426,6 +435,7 @@ fun CampoNumeroPlazas(appViewModel: AppViewModel, nPlazas: Int){
         value = nPlazas.toString(),
         onValueChange = {
             appViewModel.setNumeroPlazas(it.toInt())
+            appViewModel.setNPlazasValido(appViewModel.isNPlazasValido(it.toInt()))
         },
         supportingText = {
             Text(
@@ -434,14 +444,15 @@ fun CampoNumeroPlazas(appViewModel: AppViewModel, nPlazas: Int){
                 textAlign = TextAlign.End,
             )
         },
+        isError = !campoValido,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
     )
+    if(!campoValido){
+        Text("El numero no puede ser mayor a 99 o tener decimales")
+    }
 }
 
-@Composable
-fun CampoFecha(){
 
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -463,7 +474,7 @@ fun CampoContraseñaUnico(
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
             .padding(8.dp),
-        label = { Text(text = textoLabel) },
+        label = { Text(text = textoLabel, style = TextStyle(Color.Black)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Intenso2,
             focusedLabelColor = Intenso2,
@@ -700,7 +711,7 @@ public fun ExpandibleCabecera(textoCabecera: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
-fun DropDownList(appViewModel: AppViewModel,opciones: List<String>,selectedText: String){
+fun DropDownList(appViewModel: AppViewModel,opciones: List<String>,selectedText: String,campoValido: Boolean){
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -709,15 +720,22 @@ fun DropDownList(appViewModel: AppViewModel,opciones: List<String>,selectedText:
         expanded = isExpanded,
         onExpandedChange = {isExpanded = !isExpanded}
     ) {
-        TextField(
-            modifier = Modifier.menuAnchor(),
+        OutlinedTextField(
+            modifier = Modifier.menuAnchor().padding(8.dp),
             value = selectedText,
             onValueChange = {},
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Intenso2,
+                focusedLabelColor = Intenso2,
+                cursorColor = Intenso2
+            ),
             readOnly = true,
-            label = {Text("Categoria")},
+            label = {Text("Categoria", style = TextStyle(Color.Black))},
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-            }
+            },
+            isError = !campoValido
         )
         ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
             opciones.forEachIndexed{ index, text->
@@ -725,6 +743,7 @@ fun DropDownList(appViewModel: AppViewModel,opciones: List<String>,selectedText:
                     text = { Text(text) },
                     onClick = {
                         appViewModel.setCategoria(opciones[index])
+                        appViewModel.setCategoriaValido(appViewModel.isCategoriaValido(opciones[index]))
                         isExpanded = false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding

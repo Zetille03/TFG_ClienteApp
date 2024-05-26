@@ -1,9 +1,11 @@
 package com.example.tfg_clienteapp.model;
 
+import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-public class ActividadConsumidor {
+public class ActividadConsumidor implements Serializable {
     private int idActividadConsumidor;
 
     private String titulo;
@@ -18,7 +20,7 @@ public class ActividadConsumidor {
 
     private String descripcion;
 
-    private Timestamp dueDate;
+    private Date dueDate;
 
     private String categoria;
 
@@ -27,6 +29,20 @@ public class ActividadConsumidor {
     private Consumidor consumidor;
 
     private Ofertante ofertanteActividadConsumidor;
+
+    public ActividadConsumidor(String titulo, String descripcion, Date dueDate, String categoria, int numeroPlazas, Consumidor consumidor) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.dueDate = dueDate;
+        this.categoria = categoria;
+        this.numeroPlazas = numeroPlazas;
+        this.consumidor = consumidor;
+    }
+
+    public ActividadConsumidor(){
+
+    }
+
 
     public int getIdActividadConsumidor() {
         return idActividadConsumidor;
@@ -44,11 +60,11 @@ public class ActividadConsumidor {
         this.descripcion = descripcion;
     }
 
-    public Timestamp getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Timestamp dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -97,17 +113,4 @@ public class ActividadConsumidor {
         return Objects.hash(idActividadConsumidor, titulo, descripcion, dueDate, categoria, numeroPlazas, consumidor, ofertanteActividadConsumidor);
     }
 
-    @Override
-    public String toString() {
-        return "ActividadConsumidor{" +
-                "idActividadConsumidor=" + idActividadConsumidor +
-                ", titulo='" + titulo + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", dueDate=" + dueDate +
-                ", categoria='" + categoria + '\'' +
-                ", numeroPlazas=" + numeroPlazas +
-                ", consumidor=" + consumidor +
-                ", ofertanteActividadConsumidor=" + ofertanteActividadConsumidor +
-                '}';
-    }
 }

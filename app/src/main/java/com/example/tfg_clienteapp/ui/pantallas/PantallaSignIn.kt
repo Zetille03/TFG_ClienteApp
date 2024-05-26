@@ -73,7 +73,7 @@ fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
             BotonInhabilitado(
                 textoBoton = "Sign In",
                 accion = {
-                    if(logeoUiState.tipoUsuario.equals("Consumidor")){
+                    if(logeoUiState.tipoUsuario==("Consumidor")){
                         viewModel.comprobarSigninConsumidor()
                     }else{
                         viewModel.comprobarSigninOfertante()

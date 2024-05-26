@@ -21,7 +21,10 @@ public interface ActividadOfertanteAPI {
     Call<ActividadOfertante> save(@Body ActividadOfertante actividadOfertante);
 
     @GET("/actividad-ofertante/get-by-ofertante")
-    Call<List<ActividadOfertante>> getActividadesOfertanteByOfertante();
+    Call<List<ActividadOfertante>> getActividadesOfertanteByOfertante(@Query("ofertanteId") int ofertanteId);
+
+    @GET("/actividad-ofertante/get-apuntado")
+    Call<List<ActividadOfertante>> getActividadesOfertantesByConsumidor(@Query("consumidorId") int consumidorId);
 
     @DELETE("/actividad-ofertante/delete")
     Call<Void> deleteById(@Query("id")int id);

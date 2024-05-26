@@ -1,10 +1,12 @@
 package com.example.tfg_clienteapp.model;
 
+import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
-public class ActividadOfertante {
+public class ActividadOfertante implements Serializable {
     private int idActividadOfertante;
 
     private String titulo;
@@ -19,7 +21,7 @@ public class ActividadOfertante {
         this.titulo = titulo;
     }
 
-    private Timestamp dueDate;
+    private Date dueDate;
 
     private String categoria;
 
@@ -45,11 +47,11 @@ public class ActividadOfertante {
         this.descripcion = descripcion;
     }
 
-    public Timestamp getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Timestamp dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 

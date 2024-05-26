@@ -1,10 +1,11 @@
 package com.example.tfg_clienteapp.model;
 
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class Consumidor {
+public class Consumidor implements Serializable {
     private int idConsumidor;
 
     private String username;
@@ -13,22 +14,19 @@ public class Consumidor {
 
     private String password;
 
-    private List<ActividadConsumidor> listaActividadesDeConsumidor;
+    private List<ActividadConsumidor> listaActividadesDeConsumidor = null;
 
 
-    private List<ConsumidorActividadOfertante> listaConsumidoresActividadOfertantes;
+    private List<ConsumidorActividadOfertante> listaConsumidoresActividadOfertantes = null;
 
     public Consumidor(){
 
     }
-    public Consumidor(int idConsumidor, String username, String email, String password, List<ActividadConsumidor> listaActividadesDeConsumidor, List<ConsumidorActividadOfertante> listaConsumidoresActividadOfertantes) {
+
+    public Consumidor(int idConsumidor){
         this.idConsumidor = idConsumidor;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.listaActividadesDeConsumidor = listaActividadesDeConsumidor;
-        this.listaConsumidoresActividadOfertantes = listaConsumidoresActividadOfertantes;
     }
+
 
     public int getIdConsumidor() {
         return idConsumidor;
