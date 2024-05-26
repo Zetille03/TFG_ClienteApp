@@ -29,14 +29,13 @@ import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppViewModel){
+fun PantallaActividadesApuntadoConsumidor(navController: NavController, appViewModel: AppViewModel){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tablon de anuncios") },
+                title = { Text("Actividades como participante") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -48,7 +47,7 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                 ,
                 actions = {
 
-                    IconButton(onClick = { appViewModel.actualizarActividadesOfertantesDeConsumidores() }) {
+                    IconButton(onClick = { appViewModel.actualizarActividadesApuntadoConsumidor() }) {
                         Icon(Icons.Outlined.CloudSync, contentDescription = null)
                     }
                 }
@@ -78,14 +77,14 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    items(appViewModel.getListaActividadesOfertanteDeConsumidor()) { actividad ->
+                    items(appViewModel.getListaActividadesApuntadoConsumidor()) { actividad ->
                         TablonActividadesOfertantesCard(
                             actividadOfertante = actividad,
                             accionClicar = {
                                 actividadSeleccionada = actividad
                                 appViewModel.addElementToListaActividadesRecientesConsumidor(actividad)
 
-                           },
+                            },
                             modifier = Modifier
                                 .padding(16.dp)
                                 .fillMaxWidth(),
@@ -100,5 +99,4 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
 
         }
     )
-
 }

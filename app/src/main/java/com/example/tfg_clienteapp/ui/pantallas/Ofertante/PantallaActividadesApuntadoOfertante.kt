@@ -1,4 +1,4 @@
-package com.example.tfg_clienteapp.ui.pantallas.Consumidor
+package com.example.tfg_clienteapp.ui.pantallas.Ofertante
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,19 +24,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.tfg_clienteapp.model.ActividadConsumidor
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
+import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosOfertante
+import com.example.tfg_clienteapp.ui.componentes.TablonActividadesConsumidoresCard
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppViewModel){
+fun PantallaActividadesApuntadoOfertante(navController: NavController, appViewModel: AppViewModel){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tablon de anuncios") },
+                title = { Text("Actividades como participante") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -44,11 +46,10 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                             contentDescription = "ArrowBack"
                         )
                     }
-                }
-                ,
+                },
                 actions = {
 
-                    IconButton(onClick = { appViewModel.actualizarActividadesOfertantesDeConsumidores() }) {
+                    IconButton(onClick = { appViewModel.actualizarActividadesApuntadoConsumidor() }) {
                         Icon(Icons.Outlined.CloudSync, contentDescription = null)
                     }
                 }
@@ -63,10 +64,10 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                     .padding(paddingValues),
                 contentAlignment = Alignment.Center
             ) {
-                var actividadSeleccionada by remember { mutableStateOf<ActividadOfertante?>(null) }
+                var actividadSeleccionada by remember { mutableStateOf<ActividadConsumidor?>(null) }
 
                 actividadSeleccionada?.let { actividad ->
-                    DialogoTablonAnunciosConsumidor(
+                    DialogoTablonAnunciosOfertante(
                         appViewModel = appViewModel,
                         actividad = actividad,
                         onDismiss = { actividadSeleccionada = null }
@@ -78,14 +79,14 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    items(appViewModel.getListaActividadesOfertanteDeConsumidor()) { actividad ->
-                        TablonActividadesOfertantesCard(
-                            actividadOfertante = actividad,
+                    items(appViewModel.getListaActividadesApuntadoOfertante()) { actividad ->
+                        TablonActividadesConsumidoresCard(
+                            actividadConsumidor = actividad,
                             accionClicar = {
                                 actividadSeleccionada = actividad
-                                appViewModel.addElementToListaActividadesRecientesConsumidor(actividad)
+                                appViewModel.addElementToListaActividadesRecientesOfertante(actividad)
 
-                           },
+                            },
                             modifier = Modifier
                                 .padding(16.dp)
                                 .fillMaxWidth(),
@@ -100,5 +101,4 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
 
         }
     )
-
 }

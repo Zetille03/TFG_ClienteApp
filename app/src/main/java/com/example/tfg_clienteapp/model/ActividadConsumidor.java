@@ -24,18 +24,16 @@ public class ActividadConsumidor implements Serializable {
 
     private String categoria;
 
-    private int numeroPlazas;
 
     private Consumidor consumidor;
 
     private Ofertante ofertanteActividadConsumidor;
 
-    public ActividadConsumidor(String titulo, String descripcion, Date dueDate, String categoria, int numeroPlazas, Consumidor consumidor) {
+    public ActividadConsumidor(String titulo, String descripcion, Date dueDate, String categoria,Consumidor consumidor) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.dueDate = dueDate;
         this.categoria = categoria;
-        this.numeroPlazas = numeroPlazas;
         this.consumidor = consumidor;
     }
 
@@ -76,13 +74,6 @@ public class ActividadConsumidor implements Serializable {
         this.categoria = categoria;
     }
 
-    public int getNumeroPlazas() {
-        return numeroPlazas;
-    }
-
-    public void setNumeroPlazas(int numeroPlazas) {
-        this.numeroPlazas = numeroPlazas;
-    }
 
     public Consumidor getConsumidor() {
         return consumidor;
@@ -105,12 +96,12 @@ public class ActividadConsumidor implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActividadConsumidor that = (ActividadConsumidor) o;
-        return idActividadConsumidor == that.idActividadConsumidor && numeroPlazas == that.numeroPlazas && Objects.equals(titulo, that.titulo) && Objects.equals(descripcion, that.descripcion) && Objects.equals(dueDate, that.dueDate) && Objects.equals(categoria, that.categoria) && Objects.equals(consumidor, that.consumidor) && Objects.equals(ofertanteActividadConsumidor, that.ofertanteActividadConsumidor);
+        return idActividadConsumidor == that.idActividadConsumidor && Objects.equals(titulo, that.titulo) && Objects.equals(descripcion, that.descripcion) && Objects.equals(dueDate, that.dueDate) && Objects.equals(categoria, that.categoria) && Objects.equals(consumidor, that.consumidor) && Objects.equals(ofertanteActividadConsumidor, that.ofertanteActividadConsumidor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idActividadConsumidor, titulo, descripcion, dueDate, categoria, numeroPlazas, consumidor, ofertanteActividadConsumidor);
+        return Objects.hash(idActividadConsumidor, titulo, descripcion, dueDate, categoria,consumidor, ofertanteActividadConsumidor);
     }
 
 }

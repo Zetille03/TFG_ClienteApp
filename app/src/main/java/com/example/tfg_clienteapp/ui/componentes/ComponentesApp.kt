@@ -4,9 +4,11 @@ import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,7 +16,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -40,7 +46,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -66,12 +71,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.tfg_clienteapp.R
+import com.example.tfg_clienteapp.model.ActividadConsumidor
 import com.example.tfg_clienteapp.model.ActividadOfertante
+import com.example.tfg_clienteapp.model.ConsumidorActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.theme.*
 
@@ -676,23 +684,45 @@ fun DialogoMuchoTexto(
 //endregion
 
 @Composable
-public fun ExpandibleCabecera(textoCabecera: String) {
+public fun ExpandibleCabecera(appViewModel: AppViewModel,textoCabecera: String) {
     var expanded by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .padding(12.dp)
             .animateContentSize()
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .padding(12.dp)
         ) {
-            CabeceraTextoNormal(value = textoCabecera)
+            item{
+                CabeceraTextoNormal(value = textoCabecera)
 
-            if (expanded) {
-                Text(text = ("Co,pose ipsum color sit laxy").repeat(4))
+                var actividadSeleccionada by remember { mutableStateOf<ActividadOfertante?>(null) }
+
+                actividadSeleccionada?.let { actividad ->
+                    DialogoTablonAnunciosConsumidor(
+                        appViewModel = appViewModel,
+                        actividad = actividad,
+                        onDismiss = { actividadSeleccionada = null }
+                    )
+                }
+
+                if (expanded) {
+                    LazyRow {
+                        items(appViewModel.getListaActividadesRecientesConsumidor()){actividad->
+                            TablonActividadesOfertantesCard(
+                                actividadOfertante = actividad,
+                                accionClicar = { actividadSeleccionada = actividad },
+                                cardSize = 200.dp,
+                                imageSize = 100.dp
+                            )
+                        }
+                    }
+                }
             }
+
         }
 
         IconButton(onClick = { expanded = !expanded }) {
@@ -721,7 +751,9 @@ fun DropDownList(appViewModel: AppViewModel,opciones: List<String>,selectedText:
         onExpandedChange = {isExpanded = !isExpanded}
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().padding(8.dp),
+            modifier = Modifier
+                .menuAnchor()
+                .padding(8.dp),
             value = selectedText,
             onValueChange = {},
             textStyle = TextStyle(color = Color.Black),
@@ -766,11 +798,23 @@ fun SeleccionImagenActividad(categoria: String): Int {
     }
 }
 
-
+//region CARDS
 @Composable
-fun TablonActividadesOfertantesCard(actividadOfertante: ActividadOfertante,modifier: Modifier = Modifier){
+fun TablonActividadesOfertantesCard(
+    actividadOfertante: ActividadOfertante,
+    accionClicar: () -> Unit,
+    modifier: Modifier = Modifier,
+    cardSize: Dp,
+    imageSize: Dp
+)
+{
+
     Card(
-        modifier = modifier.size(250.dp)
+        modifier = Modifier
+            .padding(16.dp)
+            .size(cardSize)
+            .clickable { accionClicar() }
+
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Image(
@@ -778,7 +822,7 @@ fun TablonActividadesOfertantesCard(actividadOfertante: ActividadOfertante,modif
                 contentDescription = actividadOfertante.titulo,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
+                    .height(imageSize),
                 contentScale = ContentScale.Crop
             )
             Text(
@@ -789,19 +833,142 @@ fun TablonActividadesOfertantesCard(actividadOfertante: ActividadOfertante,modif
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth()
+
             )
         }
     }
 
 }
 
+@Composable
+fun MisActividadesConsumidorCard(
+    actividadConsumidor: ActividadConsumidor,
+    accionClicar: () -> Unit,
+    cardSize: Dp,
+    imageSize: Dp
+){
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .size(cardSize)
+            .clickable { accionClicar() }
+
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadConsumidor.categoria)),
+                contentDescription = actividadConsumidor.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            Text(
+                text = actividadConsumidor.titulo,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+
+            )
+        }
+    }
+}
+
+@Composable
+fun MisActividadesOfertanteCard(
+    actividadOfertante: ActividadOfertante,
+    accionClicar: () -> Unit,
+    cardSize: Dp,
+    imageSize: Dp
+){
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .size(cardSize)
+            .clickable { accionClicar() }
+
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadOfertante.categoria)),
+                contentDescription = actividadOfertante.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            Text(
+                text = actividadOfertante.titulo,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+
+            )
+        }
+    }
+}
+
+
+
+@Composable
+fun TablonActividadesConsumidoresCard(
+    actividadConsumidor: ActividadConsumidor,
+    accionClicar: () -> Unit,
+    modifier: Modifier,
+    cardSize: Dp,
+    imageSize: Dp
+)
+{
+
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .size(cardSize)
+            .clickable { accionClicar() }
+
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadConsumidor.categoria)),
+                contentDescription = actividadConsumidor.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            Text(
+                text = actividadConsumidor.titulo,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+
+            )
+        }
+    }
+
+}
+
+//endregion
+
+//region DIALOGS
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogoAñadirActividadConsumidor(){
+fun DialogoTablonAnunciosConsumidor(
+    appViewModel: AppViewModel,
+    actividad: ActividadOfertante,
+    onDismiss: () -> Unit
+) {
     Dialog(
-        onDismissRequest = {
-
-        },
+        onDismissRequest = { onDismiss() },
         properties = DialogProperties(
             usePlatformDefaultWidth = false
         )
@@ -809,34 +976,382 @@ fun DialogoAñadirActividadConsumidor(){
         Card(
             shape = RoundedCornerShape(15.dp),
             modifier = Modifier
-                .fillMaxWidth(0.95f)
+                .wrapContentWidth()
+                .wrapContentHeight()
                 .border(1.dp, color = Suave2)
         ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(title = { Text("Añadir nueva actividad") })
-                },
-                bottomBar = {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                CabeceraTextoNormal(value = "Info Actividad")
+                Image(
+                    painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(bottom = 16.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Titulo: ")
+                        }
+                        append(actividad.titulo)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Descripcion: ")
+                        }
+                        append(actividad.descripcion)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Numero de plazas: ")
+                        }
+                        append(actividad.numeroPlazas.toString())
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Fecha: ")
+                        }
+                        append(actividad.dueDate.toString())
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                var boton by remember { mutableStateOf(appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)) }
+                if (boton) {
                     Button(
-                        onClick = {  },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
+                        onClick = {
+                            appViewModel.desapuntarseActividadApuntadoConsumidor(actividad.idActividadOfertante)
+                            boton = appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Cerrar")
+                        Text("Desapuntarse")
                     }
-                }
-            ) { contentPadding ->
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(contentPadding)
-                        .padding(16.dp)
-                ) {
-
+                } else {
+                    Button(
+                        onClick = {
+                            appViewModel.apuntarConsumidorAActividadOfertante(actividad)
+                            boton = appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Apuntarse")
+                    }
                 }
             }
         }
-
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoTablonAnunciosOfertante(
+    appViewModel: AppViewModel,
+    actividad: ActividadConsumidor,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .border(1.dp, color = Suave2)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                CabeceraTextoNormal(value = "Info Actividad")
+                Image(
+                    painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(bottom = 16.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Titulo: ")
+                        }
+                        append(actividad.titulo)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Descripcion: ")
+                        }
+                        append(actividad.descripcion)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Fecha: ")
+                        }
+                        append(actividad.dueDate.toString())
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                var boton by remember { mutableStateOf(appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)) }
+                if (boton) {
+                    Button(
+                        onClick = {
+                            appViewModel.desapuntarseActividadApuntadoOfertante(actividad.idActividadConsumidor)
+                            boton = appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Desapuntarse")
+                    }
+                } else {
+                    Button(
+                        onClick = {
+                            appViewModel.apuntarOfertanteAActividadConsumidor(actividad)
+                            boton = appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Apuntarse")
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun DialogoMisActividadesConsumidor(
+    appViewModel: AppViewModel,
+    actividad: ActividadConsumidor,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .border(1.dp, color = Suave2)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                CabeceraTextoNormal(value = "Info Actividad")
+                Image(
+                    painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(bottom = 16.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Titulo: ")
+                        }
+                        append(actividad.titulo)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Descripcion: ")
+                        }
+                        append(actividad.descripcion)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Fecha: ")
+                        }
+                        append(actividad.dueDate.toString())
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Button(
+                    onClick = {
+                        appViewModel.borrarActividadConsumidor(actividad.idActividadConsumidor)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Borrar")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogoMisActividadesOfertante(
+    appViewModel: AppViewModel,
+    actividad: ActividadOfertante,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Card(
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .border(1.dp, color = Suave2)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                CabeceraTextoNormal(value = "Info Actividad")
+                Image(
+                    painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(bottom = 16.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Titulo: ")
+                        }
+                        append(actividad.titulo)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Descripcion: ")
+                        }
+                        append(actividad.descripcion)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Fecha: ")
+                        }
+                        append(actividad.dueDate.toString())
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Button(
+                    onClick = {
+                        appViewModel.borrarActividadOfertante(actividad.idActividadOfertante)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Borrar")
+                }
+            }
+        }
+    }
+}
+//endregion
+
+
+
+

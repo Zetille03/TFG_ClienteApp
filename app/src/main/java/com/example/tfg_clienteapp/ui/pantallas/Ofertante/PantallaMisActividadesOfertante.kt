@@ -1,24 +1,20 @@
-package com.example.tfg_clienteapp.ui.pantallas.Consumidor
+package com.example.tfg_clienteapp.ui.pantallas.Ofertante
 
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.CloudSync
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -31,18 +27,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.tfg_clienteapp.model.ActividadConsumidor
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
-import com.example.tfg_clienteapp.ui.componentes.DialogoMisActividadesConsumidor
-import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
-import com.example.tfg_clienteapp.ui.componentes.MisActividadesConsumidorCard
-import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
+import com.example.tfg_clienteapp.ui.componentes.DialogoMisActividadesOfertante
+import com.example.tfg_clienteapp.ui.componentes.MisActividadesOfertanteCard
 import com.example.tfg_clienteapp.ui.data.Pantallas
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaMisActividadesConsumidor(navController: NavController, appViewModel: AppViewModel){
+fun PantallaMisActividadesOfertante(navController: NavController, appViewModel: AppViewModel){
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -60,27 +53,27 @@ fun PantallaMisActividadesConsumidor(navController: NavController, appViewModel:
                         }
                     },
                     actions = {
-                        IconButton(onClick = { appViewModel.actualizarMisActividadesConsumidor() }) {
+                        IconButton(onClick = { appViewModel.actualizarMisActividadesOfertante() }) {
                             Icon(Icons.Outlined.CloudSync, contentDescription = null)
                         }
                     },
-                    
+
                     scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-                    
+
                 )
 
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { navController.navigate(Pantallas.PantallaAñadirActividadConsumidor.name) }) {
+                FloatingActionButton(onClick = { navController.navigate(Pantallas.PantallaAñadirActividadOfertante.name) }) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Agregar")
                 }
             },
             floatingActionButtonPosition = FabPosition.End,
             content = { paddingValues ->
-                var actividadSeleccionada by remember { mutableStateOf<ActividadConsumidor?>(null) }
+                var actividadSeleccionada by remember { mutableStateOf<ActividadOfertante?>(null) }
 
                 actividadSeleccionada?.let { actividad ->
-                    DialogoMisActividadesConsumidor(
+                    DialogoMisActividadesOfertante(
                         appViewModel = appViewModel,
                         actividad = actividad,
                         onDismiss = { actividadSeleccionada = null }
@@ -92,9 +85,9 @@ fun PantallaMisActividadesConsumidor(navController: NavController, appViewModel:
                     modifier = Modifier
                         .padding(paddingValues)
                 ) {
-                    items(appViewModel.getListaMisActividadesConsumidor()) { actividad ->
-                        MisActividadesConsumidorCard(
-                            actividadConsumidor = actividad,
+                    items(appViewModel.getListaMisActividadesOfertante()) { actividad ->
+                        MisActividadesOfertanteCard(
+                            actividadOfertante = actividad,
                             accionClicar = { actividadSeleccionada = actividad },
                             cardSize = 250.dp,
                             imageSize = 150.dp
