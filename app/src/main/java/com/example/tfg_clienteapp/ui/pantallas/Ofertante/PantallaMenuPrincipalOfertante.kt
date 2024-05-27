@@ -46,7 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
-import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabecera
+import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabeceraOfertante
 import com.example.tfg_clienteapp.ui.data.NavigationItem
 import com.example.tfg_clienteapp.ui.data.Pantallas
 import kotlinx.coroutines.launch
@@ -186,14 +186,17 @@ fun PantallaMenuPrincipalOfertante(navController: NavController, appViewModel: A
                 modifier = Modifier.fillMaxSize()
             ) { paddingValues ->
                 Column(Modifier.padding(paddingValues)) {
-                    ExpandibleCabecera(
+                    ExpandibleCabeceraOfertante(
                         appViewModel,
-                        textoCabecera = "Recientes"
+                        textoCabecera = "Favoritos",
+                        appViewModel.getListaActividadesFavoritasOfertante()
                     )
-                    ExpandibleCabecera(
+                    ExpandibleCabeceraOfertante(
                         appViewModel,
-                        textoCabecera = "Favoritos"
+                        textoCabecera = "Recientes",
+                        appViewModel.getListaActividadesRecientesOfertante()
                     )
+
                 }
             }
         }

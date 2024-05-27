@@ -1,6 +1,7 @@
 package com.example.tfg_clienteapp.retrofit;
 
 import com.example.tfg_clienteapp.model.ActividadConsumidor;
+import com.example.tfg_clienteapp.model.ActividadOfertante;
 
 import java.util.List;
 
@@ -25,6 +26,9 @@ public interface ActividadConsumidorAPI {
 
     @GET("/actividad-consumidor/get-apuntado")
     Call<List<ActividadConsumidor>> getActividadesConsumidoresByOfertante(@Query("ofertanteId") int id);
+
+    @GET("/actividad-consumidor/get-favoritas")
+    Call<List<ActividadConsumidor>> getActividadesFavoritasByOfertante(@Query("ofertanteId") int id);
 
     @DELETE("/actividad-consumidor/delete")
     Call<Void> deleteById(@Query("id") int id);

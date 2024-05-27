@@ -7,5 +7,6 @@ data class ConsumidorUiState(
     val listaMisActividades: List<ActividadConsumidor> = arrayListOf(),
     val listaActividadesApuntado: List<ActividadOfertante> = arrayListOf(),
     val listaActividadesOfertantes: List<ActividadOfertante> = arrayListOf(),
-    val listaActividadesRecientes: List<ActividadOfertante> = arrayListOf()
+    val listaActividadesRecientes: List<ActividadOfertante> = arrayListOf(),
+    val listaActividadesFavoritasConsumidor: List<ActividadOfertante> = arrayListOf()
 )

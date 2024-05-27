@@ -55,7 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
-import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabecera
+import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabeceraConsumidor
 import com.example.tfg_clienteapp.ui.data.NavigationItem
 import com.example.tfg_clienteapp.ui.data.Pantallas
 import kotlinx.coroutines.launch
@@ -206,13 +206,16 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
 
 
                 Column(Modifier.padding(paddingValues)) {
-                    ExpandibleCabecera(
+
+                    ExpandibleCabeceraConsumidor(
                         appViewModel,
-                        textoCabecera = "Recientes"
+                        textoCabecera = "Favoritos",
+                        appViewModel.getListaActividadesFavoritasConsumidor()
                     )
-                    ExpandibleCabecera(
+                    ExpandibleCabeceraConsumidor(
                         appViewModel,
-                        textoCabecera = "Favoritos"
+                        textoCabecera = "Recientes",
+                        appViewModel.getListaActividadesRecientesConsumidor()
                     )
                 }
 

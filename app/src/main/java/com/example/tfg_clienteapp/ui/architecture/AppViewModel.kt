@@ -9,13 +9,17 @@ import androidx.navigation.NavHostController
 import com.example.tfg_clienteapp.model.ActividadConsumidor
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.model.Consumidor
+import com.example.tfg_clienteapp.model.ConsumidorActividadFavorita
 import com.example.tfg_clienteapp.model.ConsumidorActividadOfertante
 import com.example.tfg_clienteapp.model.Ofertante
+import com.example.tfg_clienteapp.model.OfertanteActividadFavorita
 import com.example.tfg_clienteapp.retrofit.ActividadConsumidorAPI
 import com.example.tfg_clienteapp.retrofit.ActividadOfertanteAPI
 import com.example.tfg_clienteapp.retrofit.ConsumidorAPI
+import com.example.tfg_clienteapp.retrofit.ConsumidorActividadFavoritaAPI
 import com.example.tfg_clienteapp.retrofit.ConsumidorActividadOfertanteAPI
 import com.example.tfg_clienteapp.retrofit.OfertanteAPI
+import com.example.tfg_clienteapp.retrofit.OfertanteActividadFavoritaAPI
 import com.example.tfg_clienteapp.retrofit.RetrofitService
 import com.example.tfg_clienteapp.ui.data.Pantallas
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +70,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     private val actividadOfertanteAPI: ActividadOfertanteAPI = retrofitService.retrofit.create(ActividadOfertanteAPI::class.java)
 
     private val consumidorActividadOfertanteAPI: ConsumidorActividadOfertanteAPI = retrofitService.retrofit.create(ConsumidorActividadOfertanteAPI::class.java)
+
+    private val consumidorActividadFavoritaAPI: ConsumidorActividadFavoritaAPI = retrofitService.retrofit.create(ConsumidorActividadFavoritaAPI::class.java)
+
+    private val ofertanteActividadFavoritaAPI: OfertanteActividadFavoritaAPI = retrofitService.retrofit.create(OfertanteActividadFavoritaAPI::class.java)
 
     //endregion
 
@@ -191,6 +199,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         return _consumidorUiState.value.listaActividadesRecientes;
     }
 
+    fun getListaActividadesFavoritasConsumidor():List<ActividadOfertante>{
+        return  _consumidorUiState.value.listaActividadesFavoritasConsumidor;
+    }
+
 
 
     fun setListaMisActividadesConsumidor(lista: List<ActividadConsumidor>){
@@ -224,6 +236,16 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             )
         }
     }
+
+    fun setListaActividadesFavoritasConsumidor(lista: List<ActividadOfertante>){
+        _consumidorUiState.update {
+            it.copy(
+                listaActividadesFavoritasConsumidor = lista
+            )
+        }
+    }
+
+
 
     fun addElementToListaActividadesRecientesConsumidor(actividad: ActividadOfertante){
         var lista = getListaActividadesRecientesConsumidor().toMutableList()
@@ -282,6 +304,18 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         _ofertanteUiSate.update {
             it.copy(
                 listaActividadesRecientes = lista
+            )
+        }
+    }
+
+    fun getListaActividadesFavoritasOfertante():List<ActividadConsumidor>{
+        return  _ofertanteUiSate.value.listaActividadesFavoritasOfertante;
+    }
+
+    fun setListaActividadesFavoritasOfertante(lista: List<ActividadConsumidor>){
+        _ofertanteUiSate.update {
+            it.copy(
+                listaActividadesFavoritasOfertante = lista
             )
         }
     }
@@ -447,7 +481,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     }
 
     fun registrarActividadValido():Boolean{
-        return if(_logeoUiState.value.tipoUsuario!="Consumidor"){
+        return if(_logeoUiState.value.tipoUsuario=="Consumidor"){
             (getTituloValido()
                     && getDescripcionValido()
                     && getCategoriaValido()
@@ -537,6 +571,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     actualizarActividadesApuntadoConsumidor()
                     actualizarActividadesOfertantesDeConsumidores()
                     actualizarMisActividadesConsumidor()
+                    actualizarActividadesFavoritasConsumidor()
                 }
             }
 
@@ -570,6 +605,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     actualizarMisActividadesOfertante()
                     actualizarActividadesApuntadoOfertante()
                     actualizarActividadesConsumidoresDeOfertantes()
+                    actualizarActividadesFavoritasOfertante()
                 }
             }
 
@@ -595,6 +631,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     actualizarActividadesApuntadoConsumidor()
                     actualizarActividadesOfertantesDeConsumidores()
                     actualizarMisActividadesConsumidor()
+                    actualizarActividadesFavoritasConsumidor()
                 }
             }
 
@@ -622,6 +659,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     actualizarMisActividadesOfertante()
                     actualizarActividadesApuntadoOfertante()
                     actualizarActividadesConsumidoresDeOfertantes()
+                    actualizarActividadesFavoritasOfertante()
                 }
             }
 
@@ -691,6 +729,29 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                     }
+                }
+
+                override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
+                    Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+    }
+
+    fun actualizarActividadesFavoritasConsumidor(){
+        actividadOfertanteAPI.getActividadesFavoritasByConsumidor(_logeoUiState.value.idUsuario)
+            .enqueue(object: Callback<List<ActividadOfertante>>{
+                override fun onResponse(
+                    p0: Call<List<ActividadOfertante>>,
+                    p1: Response<List<ActividadOfertante>>
+                ) {
+                    if(p1.body()!=null){
+                        setListaActividadesFavoritasConsumidor(p1.body()!!)
+                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
 
                 override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
@@ -779,6 +840,28 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
             })
 
+    }
+
+    fun actualizarActividadesFavoritasOfertante(){
+        actividadConsumidorAPI.getActividadesFavoritasByOfertante(_logeoUiState.value.idUsuario)
+            .enqueue(object: Callback<List<ActividadConsumidor>>{
+                override fun onResponse(
+                    p0: Call<List<ActividadConsumidor>>,
+                    p1: Response<List<ActividadConsumidor>>
+                ) {
+                    if(p1.body()!=null){
+                        setListaActividadesFavoritasOfertante(p1.body()!!)
+                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(p0: Call<List<ActividadConsumidor>>, p1: Throwable) {
+                    Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
+                }
+
+            })
     }
 
     fun solapamientoActividadesOfertantePorFecha(fecha: Date):Boolean{
@@ -911,6 +994,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                         if(p1.body()!=null){
                             actualizarActividadesApuntadoConsumidor()
                             actualizarActividadesOfertantesDeConsumidores()
+                            actualizarActividadesFavoritasConsumidor()
                         }else{
                             Toast.makeText(context,"Error al apuntarse", Toast.LENGTH_LONG).show()
                         }
@@ -926,6 +1010,72 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
 
     }
+
+    fun añadirFavoritaConsumidor(idActividad: Int){
+        if(esFavoritaOfertante(idActividad)){
+            Toast.makeText(context, "Ya se añadio", Toast.LENGTH_LONG).show()
+        }else{
+            var c = ConsumidorActividadFavorita()
+            var consumidor = Consumidor()
+            consumidor.idConsumidor = _logeoUiState.value.idUsuario
+            var actividadOfertante = ActividadOfertante()
+            actividadOfertante.idActividadOfertante = idActividad
+            c.consumidor = consumidor
+            c.actividadOfertante = actividadOfertante
+            consumidorActividadFavoritaAPI.save(c).enqueue(object: Callback<ConsumidorActividadFavorita>{
+                override fun onResponse(
+                    p0: Call<ConsumidorActividadFavorita>,
+                    p1: Response<ConsumidorActividadFavorita>
+                ) {
+                    if(p1.body()!=null){
+                        actualizarActividadesApuntadoConsumidor()
+                        actualizarActividadesOfertantesDeConsumidores()
+                        actualizarActividadesFavoritasConsumidor()
+                    }else{
+                        Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+
+                    }
+                }
+
+                override fun onFailure(p0: Call<ConsumidorActividadFavorita>, p1: Throwable) {
+                    Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                }
+
+            })
+        }
+    }
+
+    fun borrarFavoritaConsumidor(idActividad: Int){
+        if(!esFavoritaOfertante(idActividad)){
+            Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_LONG).show()
+        }else{
+            consumidorActividadFavoritaAPI.deleteByIds(idActividad,_logeoUiState.value.idUsuario)
+                .enqueue(object:Callback<Void>{
+                    override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
+                        if(p1.isSuccessful){
+                            actualizarActividadesApuntadoConsumidor()
+                            actualizarActividadesOfertantesDeConsumidores()
+                            actualizarActividadesFavoritasConsumidor()
+                        }else{
+                            Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<Void>, p1: Throwable) {
+                        Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+
+                    }
+
+                })
+        }
+    }
+    fun esFavoritaConsumidor(idActividad: Int):Boolean{
+        for(actividad in getListaActividadesFavoritasConsumidor()){
+            if(actividad.idActividadOfertante==idActividad)return true;
+        }
+        return false;
+    }
+
 
     fun estaApuntadoConsumidor(idActividad: Int):Boolean{
 
@@ -945,6 +1095,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                         if (p1.isSuccessful) {
                             actualizarActividadesApuntadoConsumidor()
                             actualizarActividadesOfertantesDeConsumidores()
+                            actualizarActividadesFavoritasConsumidor()
                         } else {
                             Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_LONG).show()
                         }
@@ -991,6 +1142,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             if(p1.body()!=null){
                                 actualizarActividadesApuntadoOfertante()
                                 actualizarActividadesConsumidoresDeOfertantes()
+                                actualizarActividadesFavoritasOfertante()
                             }else{
                                 Toast.makeText(context, "Error al apuntarse", Toast.LENGTH_LONG).show()
                             }
@@ -1002,6 +1154,39 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
                     })
             }
+        }
+    }
+
+    fun añadirFavoritaOfertante(idActividad: Int){
+        if(esFavoritaOfertante(idActividad)){
+            Toast.makeText(context, "Ya se añadio", Toast.LENGTH_LONG).show()
+        }else{
+            var o = OfertanteActividadFavorita()
+            var ofertante = Ofertante()
+            var actividadConsumidor = ActividadConsumidor()
+            ofertante.idOfertante = _logeoUiState.value.idUsuario
+            actividadConsumidor.idActividadConsumidor = idActividad
+            o.ofertante = ofertante
+            o.actividadConsumidor = actividadConsumidor
+            ofertanteActividadFavoritaAPI.save(o).enqueue(object: Callback<OfertanteActividadFavorita>{
+                override fun onResponse(
+                    p0: Call<OfertanteActividadFavorita>,
+                    p1: Response<OfertanteActividadFavorita>
+                ) {
+                    if(p1.body()!=null){
+                        actualizarActividadesApuntadoOfertante()
+                        actualizarActividadesConsumidoresDeOfertantes()
+                        actualizarActividadesFavoritasOfertante()
+                    }else{
+                        Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(p0: Call<OfertanteActividadFavorita>, p1: Throwable) {
+                    Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                }
+
+            })
         }
     }
 
@@ -1017,6 +1202,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     if(p1.body()!=null){
                         actualizarActividadesApuntadoOfertante()
                         actualizarActividadesConsumidoresDeOfertantes()
+                        actualizarActividadesFavoritasOfertante()
                     }else{
                         Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_LONG).show()
                     }
@@ -1028,6 +1214,16 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
             })
         }
+    }
+
+
+
+
+    fun esFavoritaOfertante(idActividad: Int):Boolean{
+        for(actividad in getListaActividadesFavoritasOfertante()){
+            if(actividad.idActividadConsumidor==idActividad)return true;
+        }
+        return false;
     }
 
     fun estaApuntadoOfertante(idActividad: Int):Boolean{
@@ -1054,6 +1250,32 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
         })
     }
+
+    fun borrarFavoritaOfertante(idActividad: Int){
+        if(!esFavoritaOfertante(idActividad)){
+            Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_LONG).show()
+        }else {
+            ofertanteActividadFavoritaAPI.deleteByIds(idActividad, _logeoUiState.value.idUsuario)
+                .enqueue(object : Callback<Void> {
+                    override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
+                        if (p1.isSuccessful) {
+                            actualizarActividadesApuntadoOfertante()
+                            actualizarActividadesConsumidoresDeOfertantes()
+                            actualizarActividadesFavoritasOfertante()
+                        } else {
+                            Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<Void>, p1: Throwable) {
+                        Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                    }
+
+                })
+        }
+    }
+
+
 
 
     //endregion
@@ -1115,7 +1337,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 listaMisActividades = arrayListOf(),
                 listaActividadesApuntado = arrayListOf(),
                 listaActividadesOfertantes = arrayListOf(),
-                listaActividadesRecientes = arrayListOf()
+                listaActividadesRecientes = arrayListOf(),
+                listaActividadesFavoritasConsumidor = arrayListOf()
             )
         }
     }
@@ -1126,7 +1349,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 listaMisActividades = arrayListOf(),
                 listaActividadesApuntado = arrayListOf(),
                 listaActividadesAConsumidores = arrayListOf(),
-                listaActividadesRecientes = arrayListOf()
+                listaActividadesRecientes = arrayListOf(),
+                listaActividadesFavoritasOfertante = arrayListOf()
             )
         }
     }

@@ -28,6 +28,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -684,7 +686,7 @@ fun DialogoMuchoTexto(
 //endregion
 
 @Composable
-public fun ExpandibleCabecera(appViewModel: AppViewModel,textoCabecera: String) {
+public fun ExpandibleCabeceraConsumidor(appViewModel: AppViewModel,textoCabecera: String,listaItems: List<ActividadOfertante>) {
     var expanded by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
@@ -711,10 +713,67 @@ public fun ExpandibleCabecera(appViewModel: AppViewModel,textoCabecera: String) 
 
                 if (expanded) {
                     LazyRow {
-                        items(appViewModel.getListaActividadesRecientesConsumidor()){actividad->
+                        items(listaItems){actividad->
                             TablonActividadesOfertantesCard(
                                 actividadOfertante = actividad,
                                 accionClicar = { actividadSeleccionada = actividad },
+                                cardSize = 200.dp,
+                                imageSize = 100.dp
+                            )
+                        }
+                    }
+                }
+            }
+
+        }
+
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription =
+                if (expanded) {
+                    "show less"
+                } else {
+                    "show more"
+                }
+            )
+        }
+    }
+}
+
+@Composable
+public fun ExpandibleCabeceraOfertante(appViewModel: AppViewModel,textoCabecera: String,listaItems: List<ActividadConsumidor>) {
+    var expanded by remember { mutableStateOf(false) }
+    Row(
+        modifier = Modifier
+            .padding(12.dp)
+            .animateContentSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(12.dp)
+        ) {
+            item{
+                CabeceraTextoNormal(value = textoCabecera)
+
+                var actividadSeleccionada by remember { mutableStateOf<ActividadConsumidor?>(null) }
+
+                actividadSeleccionada?.let { actividad ->
+                    DialogoTablonAnunciosOfertante(
+                        appViewModel = appViewModel,
+                        actividad = actividad,
+                        onDismiss = { actividadSeleccionada = null }
+                    )
+                }
+
+                if (expanded) {
+                    LazyRow {
+                        items(listaItems){actividad->
+                            TablonActividadesConsumidoresCard(
+                                actividadConsumidor = actividad,
+                                accionClicar = { actividadSeleccionada = actividad },
+                                modifier = Modifier,
                                 cardSize = 200.dp,
                                 imageSize = 100.dp
                             )
@@ -983,7 +1042,34 @@ fun DialogoTablonAnunciosConsumidor(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                CabeceraTextoNormal(value = "Info Actividad")
+                var esFavorito by remember{mutableStateOf(appViewModel.esFavoritaConsumidor(actividad.idActividadOfertante))}
+                var icono by remember{ mutableStateOf(
+                    if(esFavorito){
+                        Icons.Filled.Favorite
+                    }else{
+                        Icons.Filled.FavoriteBorder
+                    }
+                ) }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Info Actividad")
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = {
+                            if(!esFavorito){
+                                appViewModel.añadirFavoritaConsumidor(actividad.idActividadOfertante)
+                            }else{
+                                appViewModel.borrarFavoritaConsumidor(actividad.idActividadOfertante)
+                            }
+                        }) {
+                        Icon(
+                            imageVector = icono,
+                            contentDescription = "Favorito"
+                        )
+                    }
+                }
                 Image(
                     painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
                     contentDescription = null,
@@ -1098,7 +1184,34 @@ fun DialogoTablonAnunciosOfertante(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                CabeceraTextoNormal(value = "Info Actividad")
+                var esFavorito by remember{mutableStateOf(appViewModel.esFavoritaOfertante(actividad.idActividadConsumidor))}
+                var icono by remember{ mutableStateOf(
+                    if(esFavorito){
+                        Icons.Filled.Favorite
+                    }else{
+                        Icons.Filled.FavoriteBorder
+                    }
+                ) }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Info Actividad")
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = {
+                            if(!esFavorito){
+                                appViewModel.añadirFavoritaOfertante(actividad.idActividadConsumidor)
+                            }else{
+                                appViewModel.borrarFavoritaOfertante(actividad.idActividadConsumidor)
+                            }
+                        }) {
+                        Icon(
+                            imageVector = icono,
+                            contentDescription = "Favorito"
+                        )
+                    }
+                }
                 Image(
                     painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
                     contentDescription = null,
@@ -1320,6 +1433,20 @@ fun DialogoMisActividadesOfertante(
                             append("Descripcion: ")
                         }
                         append(actividad.descripcion)
+                    },
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Numero plazas: ")
+                        }
+                        append(actividad.numeroPlazas.toString())
                     },
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

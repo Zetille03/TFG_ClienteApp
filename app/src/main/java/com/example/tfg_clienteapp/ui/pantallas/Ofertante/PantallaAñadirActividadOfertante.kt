@@ -82,6 +82,11 @@ fun PantallaAñadirActividadOfertante(navController: NavController, appViewModel
                         actividadUiState.descripcion,
                         appViewModel.getDescripcionValido()
                     )
+                    CampoNumeroPlazas(
+                        appViewModel = appViewModel,
+                        nPlazas = actividadUiState.nPlazas,
+                        campoValido = appViewModel.getNPlazasValido()
+                    )
                     DropDownList(
                         appViewModel,
                         categorias,actividadUiState.categoria,

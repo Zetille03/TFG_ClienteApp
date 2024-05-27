@@ -26,6 +26,9 @@ public interface ActividadOfertanteAPI {
     @GET("/actividad-ofertante/get-apuntado")
     Call<List<ActividadOfertante>> getActividadesOfertantesByConsumidor(@Query("consumidorId") int consumidorId);
 
+    @GET("/actividad-ofertante/get-favoritas")
+    Call<List<ActividadOfertante>> getActividadesFavoritasByConsumidor(@Query("consumidorId") int id);
+
     @DELETE("/actividad-ofertante/delete")
     Call<Void> deleteById(@Query("id")int id);
 
