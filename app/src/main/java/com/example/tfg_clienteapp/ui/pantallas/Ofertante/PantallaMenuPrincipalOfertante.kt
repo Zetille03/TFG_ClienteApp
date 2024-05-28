@@ -60,21 +60,21 @@ fun PantallaMenuPrincipalOfertante(navController: NavController, appViewModel: A
             selectedIcon = Icons.Filled.SportsTennis,
             unselectedIcon = Icons.Outlined.SportsTennis,
             route = Pantallas.PantallaMisActividadesOfertante.name,
-            badgeCount = appViewModel.getListaMisActividadesConsumidor().size
+            badgeCount = appViewModel.getBadgeListaMisActividadesOfertante()
         ),
         NavigationItem(
             title = "Actividades como participante",
             selectedIcon = Icons.Filled.SportsBaseball,
             unselectedIcon = Icons.Outlined.SportsBaseball,
             route = Pantallas.PantallaActividadesApuntadoOfertante.name,
-            badgeCount = appViewModel.getListaActividadesApuntadoConsumidor().size
+            badgeCount = appViewModel.getBadgeListaApuntadoOfertante()
         ),
         NavigationItem(
             title = "Tablon de anuncios",
             selectedIcon = Icons.Filled.SportsCricket,
             unselectedIcon = Icons.Outlined.SportsCricket,
             route = Pantallas.PantallaTablonOfertante.name,
-            badgeCount = appViewModel.getListaActividadesOfertanteDeConsumidor().size
+            badgeCount = appViewModel.getBadgeListaTablonOfertante()
         )
     )
 

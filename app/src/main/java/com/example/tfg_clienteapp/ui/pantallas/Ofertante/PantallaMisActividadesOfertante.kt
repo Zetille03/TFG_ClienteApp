@@ -1,5 +1,7 @@
 package com.example.tfg_clienteapp.ui.pantallas.Ofertante
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,6 +35,7 @@ import com.example.tfg_clienteapp.ui.componentes.DialogoMisActividadesOfertante
 import com.example.tfg_clienteapp.ui.componentes.MisActividadesOfertanteCard
 import com.example.tfg_clienteapp.ui.data.Pantallas
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaMisActividadesOfertante(navController: NavController, appViewModel: AppViewModel){
@@ -76,6 +79,7 @@ fun PantallaMisActividadesOfertante(navController: NavController, appViewModel: 
                     DialogoMisActividadesOfertante(
                         appViewModel = appViewModel,
                         actividad = actividad,
+                        navController,
                         onDismiss = { actividadSeleccionada = null }
                     )
                 }

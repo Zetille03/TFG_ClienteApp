@@ -69,19 +69,22 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
             title = "Mis actividades",
             selectedIcon = Icons.Filled.SportsTennis,
             unselectedIcon = Icons.Outlined.SportsTennis,
-            route = Pantallas.PantallaMisActividadesConsumidor.name
+            route = Pantallas.PantallaMisActividadesConsumidor.name,
+            badgeCount = appViewModel.getBadgeListaMisActividadesConsumidor()
         ),
         NavigationItem(
             title = "Actividades como participante",
             selectedIcon = Icons.Filled.SportsBaseball,
             unselectedIcon = Icons.Outlined.SportsBaseball,
-            route = Pantallas.PantallaActividadesApuntadoConsumidor.name
+            route = Pantallas.PantallaActividadesApuntadoConsumidor.name,
+            badgeCount = appViewModel.getBadgeListaApuntadoConsumidor()
         ),
         NavigationItem(
             title="Tablon de anuncios",
             selectedIcon = Icons.Filled.SportsCricket,
             unselectedIcon = Icons.Outlined.SportsCricket,
-            route = Pantallas.PantallaTablonConsumidor.name
+            route = Pantallas.PantallaTablonConsumidor.name,
+            badgeCount = appViewModel.getBadgeListaTablonConsumidor()
         )
 
     )

@@ -8,6 +8,9 @@ data class OfertanteUiState(
     val listaActividadesApuntado: List<ActividadConsumidor> = arrayListOf(),
     val listaActividadesAConsumidores: List<ActividadConsumidor> = arrayListOf(),
     val listaActividadesRecientes: List<ActividadConsumidor> = arrayListOf(),
-    val listaActividadesFavoritasOfertante: List<ActividadConsumidor> = arrayListOf()
+    val listaActividadesFavoritasOfertante: List<ActividadConsumidor> = arrayListOf(),
+    val badgeListaMisActividades: Int = listaMisActividades.size,
+    val badgeListaApuntado: Int = listaActividadesApuntado.size,
+    val badgeListaTablon: Int = listaActividadesAConsumidores.size
 
 )

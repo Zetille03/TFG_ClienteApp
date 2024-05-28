@@ -93,7 +93,11 @@ fun PantallaAñadirActividadConsumidor(navController: NavController, appViewMode
                     )
                     BotonInhabilitado(textoBoton = "Registrar",
                         accion = {
-                            appViewModel.postActividadConsumidor()
+                            if(actividadUiState.tipoRegistro=="POST"){
+                                appViewModel.postActividadConsumidor()
+                            }else{
+                                appViewModel.updateActividadConsumidor()
+                            }
                         },
                         botonActivo = appViewModel.registrarActividadValido())
                 }

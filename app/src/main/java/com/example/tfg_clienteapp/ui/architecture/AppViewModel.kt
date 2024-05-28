@@ -29,16 +29,11 @@ import kotlinx.coroutines.flow.update
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 import java.sql.Date
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class AppViewModel(public val context: Context, public val navigator: NavHostController): ViewModel()  {
 
@@ -256,6 +251,44 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         }
     }
 
+    fun getBadgeListaMisActividadesConsumidor(): Int {
+        return _consumidorUiState.value.badgeListaMisActividades;
+    }
+
+    fun getBadgeListaApuntadoConsumidor(): Int {
+        return _consumidorUiState.value.badgeListaApuntado;
+    }
+
+    fun getBadgeListaTablonConsumidor(): Int {
+        return _consumidorUiState.value.badgeListaTablon;
+    }
+
+    fun setBadgeListaMisActividadesConsumidor(valor: Int){
+        _consumidorUiState.update {
+            it.copy(
+                badgeListaMisActividades = valor
+            )
+        }
+    }
+
+    fun setBadgeListaApuntadoConsumidor(valor: Int){
+        _consumidorUiState.update {
+            it.copy(
+                badgeListaApuntado = valor
+            )
+        }
+    }
+
+
+
+    fun setBadgeListaTablonConsumidor(valor: Int){
+        _consumidorUiState.update {
+            it.copy(
+                badgeListaTablon = valor
+            )
+        }
+    }
+
     //endregion
 
     //region Ofertante
@@ -326,6 +359,43 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         setListaActividadesRecientesofertante(lista)
     }
 
+    fun getBadgeListaMisActividadesOfertante(): Int {
+        return _ofertanteUiSate.value.badgeListaMisActividades;
+    }
+
+    fun getBadgeListaApuntadoOfertante(): Int {
+        return _ofertanteUiSate.value.badgeListaApuntado;
+    }
+
+    fun getBadgeListaTablonOfertante(): Int {
+        return _ofertanteUiSate.value.badgeListaTablon;
+    }
+
+    fun setBadgeListaMisActividadesOfertante(valor: Int){
+        _ofertanteUiSate.update {
+            it.copy(
+                badgeListaMisActividades = valor
+            )
+        }
+    }
+
+    fun setBadgeListaApuntadoOfertante(valor: Int){
+        _ofertanteUiSate.update {
+            it.copy(
+                badgeListaApuntado = valor
+            )
+        }
+    }
+
+
+
+    fun setBadgeListaTablonOfertante(valor: Int){
+        _ofertanteUiSate.update {
+            it.copy(
+                badgeListaTablon = valor
+            )
+        }
+    }
 
     //endregion
 
@@ -461,8 +531,11 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         return descripcion!=""
     }
 
-    fun isNPlazasValido(nPlazas: Int):Boolean{
+    fun isNPlazasValido(nPlazasPrevias: Int = -1,nPlazas: Int):Boolean{
         var tieneDecimales: Boolean = false
+        if(nPlazasPrevias!=-1){
+
+        }
         var numberString = nPlazas.toString()
 
 
@@ -476,9 +549,57 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         return categoria!=""
     }
 
-    fun isFechaValido(fecha: String):Boolean{
-        return fecha!=""
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun isFechaValido(fecha: String): Boolean {
+        if (fecha.isEmpty()) {
+            return false
+        }
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        try {
+            val fechaIngresada = LocalDate.parse(fecha, formatter)
+            val fechaActual = LocalDate.now()
+            return !fechaIngresada.isBefore(fechaActual)
+        } catch (e: Exception) {
+            return false
+        }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun loadPUTActividadOfertante(actividad: ActividadOfertante){
+        _actividadUiState.update {
+            it.copy(
+                titulo = actividad.titulo,
+                descripcion = actividad.descripcion,
+                nPlazas = actividad.numeroPlazas,
+                categoria = actividad.categoria,
+                fecha = convertDateToString(actividad.dueDate),
+                tituloValido = true,
+                descripcionValido = true,
+                nPlazasValido = true,
+                categoriaValido = true,
+                tipoRegistro = "PUT",
+                idActividad = actividad.idActividadOfertante
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun loadPUTActividadConsumidor(actividad: ActividadConsumidor){
+        _actividadUiState.update {
+            it.copy(
+                titulo = actividad.titulo,
+                descripcion = actividad.descripcion,
+                categoria = actividad.categoria,
+                fecha = convertDateToString(actividad.dueDate),
+                tituloValido = true,
+                descripcionValido = true,
+                categoriaValido = true,
+                tipoRegistro = "PUT",
+                idActividad = actividad.idActividadConsumidor
+            )
+        }
+    }
+
 
     fun registrarActividadValido():Boolean{
         return if(_logeoUiState.value.tipoUsuario=="Consumidor"){
@@ -547,7 +668,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 && isValidUser(logeoUiState.value.nombreUsuario)
     }
 
-
     public fun postConsumidor(){
         val c =  Consumidor()
         c.username = _logeoUiState.value.nombreUsuario
@@ -568,16 +688,16 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Consumidor registrado", Toast.LENGTH_LONG).show()
                     setIdUser(p1.body()!!.idConsumidor)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
-                    actualizarActividadesApuntadoConsumidor()
-                    actualizarActividadesOfertantesDeConsumidores()
-                    actualizarMisActividadesConsumidor()
-                    actualizarActividadesFavoritasConsumidor()
+                    actualizarListasConsumidor()
                 }
             }
 
 
         })
     }
+
+
+
 
 
     public fun postOfertante(){
@@ -602,16 +722,15 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Ofertante registrado", Toast.LENGTH_LONG).show()
                     setIdUser(p1.body()!!.idOfertante)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
-                    actualizarMisActividadesOfertante()
-                    actualizarActividadesApuntadoOfertante()
-                    actualizarActividadesConsumidoresDeOfertantes()
-                    actualizarActividadesFavoritasOfertante()
+                    actualizarListasOfertante()
                 }
             }
 
 
         })
     }
+
+
 
     fun comprobarSigninConsumidor() {
         val c =  Consumidor()
@@ -628,10 +747,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_LONG).show()
                     setIdUser(p1.body()!!.idConsumidor)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
-                    actualizarActividadesApuntadoConsumidor()
-                    actualizarActividadesOfertantesDeConsumidores()
-                    actualizarMisActividadesConsumidor()
-                    actualizarActividadesFavoritasConsumidor()
+                    actualizarListasConsumidor()
                 }
             }
 
@@ -656,10 +772,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_LONG).show()
                     setIdUser(p1.body()!!.idOfertante)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
-                    actualizarMisActividadesOfertante()
-                    actualizarActividadesApuntadoOfertante()
-                    actualizarActividadesConsumidoresDeOfertantes()
-                    actualizarActividadesFavoritasOfertante()
+                    actualizarListasOfertante()
                 }
             }
 
@@ -682,6 +795,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             ) {
                 if(p1.body()!=null){
                     setListaActividadesOfertantesDeConsumidor(p1.body()!!)
+                    setBadgeListaTablonConsumidor(p1.body()!!.size)
                     Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
@@ -703,6 +817,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             ) {
                 if(p1.body()!=null){
                     setListaMisActividadesConsumidor(p1.body()!!)
+                    setBadgeListaMisActividadesConsumidor(p1.body()!!.size)
                     Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
@@ -725,6 +840,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 ) {
                     if(p1.body()!=null){
                         setListaActividadesApuntadoConsumidor(p1.body()!!)
+                        setBadgeListaApuntadoConsumidor(p1.body()!!.size)
                         Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
@@ -762,11 +878,14 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     }
 
 
-    fun solapamientoActividadesConsumidorPorFecha(fecha: Date): Boolean{
+    fun solapamientoActividadesConsumidorPorFecha(idActividad: Int = 0,fecha: Date): Boolean{
         for(actividad in getListaActividadesApuntadoConsumidor()){
             if(actividad.dueDate.equals(fecha))return true
         }
         for(actividad in getListaMisActividadesConsumidor()){
+            if(actividad.idActividadConsumidor==idActividad){
+                continue
+            }
             if(actividad.dueDate.equals(fecha))return true
         }
         return false
@@ -785,6 +904,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             ) {
                 if(p1.body()!=null){
                     setListaActividadesConsumidoresDeOfertante(p1.body()!!)
+                    setBadgeListaTablonOfertante(p1.body()!!.size)
                     Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
@@ -806,6 +926,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 ) {
                     if(p1.body()!=null){
                         setListaMisActividadesOfertante(p1.body()!!)
+                        setBadgeListaMisActividadesOfertante(p1.body()!!.size)
                         Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
@@ -828,6 +949,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 ) {
                     if(p1.body()!=null){
                         setListaActividadesApuntadoOfertante(p1.body()!!)
+                        setBadgeListaApuntadoOfertante(p1.body()!!.size)
                         Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
@@ -864,11 +986,15 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             })
     }
 
-    fun solapamientoActividadesOfertantePorFecha(fecha: Date):Boolean{
+    fun solapamientoActividadesOfertantePorFecha(idActividad: Int = 0,fecha: Date):Boolean{
         for(actividad in getListaActividadesApuntadoOfertante()){
+
             if(actividad.dueDate.equals(fecha))return true
         }
         for(actividad in getListaMisActividadesOfertante()){
+            if(actividad.idActividadOfertante==idActividad){
+                continue
+            }
             if(actividad.dueDate.equals(fecha))return true
         }
         return false
@@ -887,7 +1013,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             actividadUiState.value.categoria,
             Consumidor(logeoUiState.value.idUsuario)
         )
-        if(solapamientoActividadesConsumidorPorFecha(actividad.dueDate)){
+        if(solapamientoActividadesConsumidorPorFecha(fecha = actividad.dueDate)){
             Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
         }else{
             actividadConsumidorAPI.save(actividad).enqueue(object: Callback<ActividadConsumidor>{
@@ -928,7 +1054,58 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun updateActividadConsumidor(){
+        val actividad = ActividadConsumidor(actividadUiState.value.titulo,
+            actividadUiState.value.descripcion,
+            convertStringToDate(actividadUiState.value.fecha),
+            actividadUiState.value.categoria,
+            Consumidor(logeoUiState.value.idUsuario)
+        )
+        if(solapamientoActividadesConsumidorPorFecha(_actividadUiState.value.idActividad,fecha = actividad.dueDate)){
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+        }else{
+            actividadConsumidorAPI.update(_actividadUiState.value.idActividad, actividad).enqueue(object: Callback<ActividadConsumidor>{
+                override fun onResponse(
+                    p0: Call<ActividadConsumidor>,
+                    p1: Response<ActividadConsumidor>
+                ) {
+                    if(p1.body()!=null){
+                        actividadConsumidorAPI.getActividadesConsumidoresByConsumidor(logeoUiState.value.idUsuario).enqueue(object: Callback<List<ActividadConsumidor>>{
+                            override fun onResponse(
+                                p0: Call<List<ActividadConsumidor>>,
+                                p1: Response<List<ActividadConsumidor>>
+                            ) {
+                                if(p1.body()!=null){
+                                    setListaMisActividadesConsumidor(p1.body()!!)
+                                }
+                            }
+
+                            override fun onFailure(p0: Call<List<ActividadConsumidor>>, p1: Throwable) {
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                            }
+
+                        })
+                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_LONG).show()
+
+                    }else{
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(p0: Call<ActividadConsumidor>, p1: Throwable) {
+                    Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                }
+
+            })
+        }
+
+    }
+
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun postActividadOfertante(){
+
         val actividad = ActividadOfertante()
         val ofertante = Ofertante()
         ofertante.idOfertante = logeoUiState.value.idUsuario
@@ -938,38 +1115,93 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         actividad.numeroPlazas = actividadUiState.value.nPlazas
         actividad.dueDate = convertStringToDate(actividadUiState.value.fecha)
         actividad.categoria = actividadUiState.value.categoria
-        actividadOfertanteAPI.save(actividad).enqueue(object: Callback<ActividadOfertante>{
-            override fun onResponse(
-                p0: Call<ActividadOfertante>,
-                p1: Response<ActividadOfertante>
-            ) {
-                if(p1.body()!=null){
-                    actividadOfertanteAPI.getActividadesOfertanteByOfertante(logeoUiState.value.idUsuario).enqueue(object: Callback<List<ActividadOfertante>>{
-                        override fun onResponse(
-                            p0: Call<List<ActividadOfertante>>,
-                            p1: Response<List<ActividadOfertante>>
-                        ) {
-                            if(p1.body()!=null){
-                                setListaMisActividadesOfertante(p1.body()!!)
+        if(solapamientoActividadesOfertantePorFecha(fecha = actividad.dueDate)){
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+        }else{
+            actividadOfertanteAPI.save(actividad).enqueue(object: Callback<ActividadOfertante>{
+                override fun onResponse(
+                    p0: Call<ActividadOfertante>,
+                    p1: Response<ActividadOfertante>
+                ) {
+                    if(p1.body()!=null){
+                        actividadOfertanteAPI.getActividadesOfertanteByOfertante(logeoUiState.value.idUsuario).enqueue(object: Callback<List<ActividadOfertante>>{
+                            override fun onResponse(
+                                p0: Call<List<ActividadOfertante>>,
+                                p1: Response<List<ActividadOfertante>>
+                            ) {
+                                if(p1.body()!=null){
+                                    setListaMisActividadesOfertante(p1.body()!!)
+                                }
                             }
-                        }
 
-                        override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
-                            Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
-                        }
+                            override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                            }
 
-                    })
-                    Toast.makeText(context,"Actividad añadida", Toast.LENGTH_LONG).show()
-                }else{
+                        })
+                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(p0: Call<ActividadOfertante>, p1: Throwable) {
                     Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
                 }
-            }
 
-            override fun onFailure(p0: Call<ActividadOfertante>, p1: Throwable) {
-                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
-            }
+            })
+        }
 
-        })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateActividadOfertante(){
+        val actividad = ActividadOfertante()
+        val ofertante = Ofertante()
+        ofertante.idOfertante = logeoUiState.value.idUsuario
+        actividad.ofertante = ofertante
+        actividad.titulo = actividadUiState.value.titulo
+        actividad.descripcion = actividadUiState.value.descripcion
+        actividad.numeroPlazas = actividadUiState.value.nPlazas
+        actividad.dueDate = convertStringToDate(actividadUiState.value.fecha)
+        actividad.categoria = actividadUiState.value.categoria
+        if(solapamientoActividadesOfertantePorFecha(_actividadUiState.value.idActividad,fecha = actividad.dueDate)){
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+        }else{
+            actividadOfertanteAPI.update(_actividadUiState.value.idActividad,actividad).enqueue(object: Callback<ActividadOfertante>{
+                override fun onResponse(
+                    p0: Call<ActividadOfertante>,
+                    p1: Response<ActividadOfertante>
+                ) {
+                    if(p1.body()!=null){
+                        actividadOfertanteAPI.getActividadesOfertanteByOfertante(logeoUiState.value.idUsuario).enqueue(object: Callback<List<ActividadOfertante>>{
+                            override fun onResponse(
+                                p0: Call<List<ActividadOfertante>>,
+                                p1: Response<List<ActividadOfertante>>
+                            ) {
+                                if(p1.body()!=null){
+                                    setListaMisActividadesOfertante(p1.body()!!)
+                                }
+                            }
+
+                            override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                            }
+
+                        })
+                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(p0: Call<ActividadOfertante>, p1: Throwable) {
+                    Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                }
+
+            })
+        }
+
     }
 
     fun apuntarConsumidorAActividadOfertante(actividad: ActividadOfertante){
@@ -1046,7 +1278,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     }
 
     fun borrarFavoritaConsumidor(idActividad: Int){
-        if(!esFavoritaOfertante(idActividad)){
+        if(!esFavoritaConsumidor(idActividad)){
             Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_LONG).show()
         }else{
             consumidorActividadFavoritaAPI.deleteByIds(idActividad,_logeoUiState.value.idUsuario)
@@ -1285,16 +1517,15 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun convertDateToString(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-        return dateFormat.format(date)
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return localDate.format(formatter)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun convertStringToDate(dateString: String): Date {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        // Parsea la cadena en un objeto LocalDate
         val localDate = LocalDate.parse(dateString, formatter)
-        // Convierte el LocalDate a un Date
         return Date.valueOf(localDate.toString())
     }
 
@@ -1326,7 +1557,9 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 descripcionValido  = false,
                 nPlazasValido  = false,
                 categoriaValido = false,
-                fechaValido = false
+                fechaValido = false,
+                tipoRegistro = "POST",
+                idActividad = 0
             )
         }
     }
@@ -1338,7 +1571,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 listaActividadesApuntado = arrayListOf(),
                 listaActividadesOfertantes = arrayListOf(),
                 listaActividadesRecientes = arrayListOf(),
-                listaActividadesFavoritasConsumidor = arrayListOf()
+                listaActividadesFavoritasConsumidor = arrayListOf(),
+                badgeListaMisActividades = _consumidorUiState.value.listaMisActividades.size,
+                badgeListaApuntado = _consumidorUiState.value.listaActividadesApuntado.size,
+                badgeListaTablon = _consumidorUiState.value.listaActividadesOfertantes.size
             )
         }
     }
@@ -1350,7 +1586,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 listaActividadesApuntado = arrayListOf(),
                 listaActividadesAConsumidores = arrayListOf(),
                 listaActividadesRecientes = arrayListOf(),
-                listaActividadesFavoritasOfertante = arrayListOf()
+                listaActividadesFavoritasOfertante = arrayListOf(),
+                badgeListaMisActividades = _ofertanteUiSate.value.listaMisActividades.size,
+                badgeListaApuntado = _ofertanteUiSate.value.listaActividadesApuntado.size,
+                badgeListaTablon = _ofertanteUiSate.value.listaActividadesAConsumidores.size
             )
         }
     }
@@ -1360,6 +1599,20 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         resetActividadData()
         resetConsumidorData()
         resetOfertanteData()
+    }
+
+    fun actualizarListasConsumidor(){
+        actualizarActividadesApuntadoConsumidor()
+        actualizarActividadesOfertantesDeConsumidores()
+        actualizarMisActividadesConsumidor()
+        actualizarActividadesFavoritasConsumidor()
+    }
+
+    fun actualizarListasOfertante(){
+        actualizarMisActividadesOfertante()
+        actualizarActividadesApuntadoOfertante()
+        actualizarActividadesConsumidoresDeOfertantes()
+        actualizarActividadesFavoritasOfertante()
     }
 
 

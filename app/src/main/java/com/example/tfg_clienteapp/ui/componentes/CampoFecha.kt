@@ -58,6 +58,7 @@ fun DatePickerWithDialog(
         dateToFormattedString(millisToLocalDate)
     } ?: ""))
 
+
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -88,6 +89,9 @@ fun DatePickerWithDialog(
             ),
             isError = !campoValido
         )
+        if(!campoValido){
+            Text("La fecha no puede ser pasado o vacio")
+        }
 
         if (showDialog) {
             DatePickerDialog(

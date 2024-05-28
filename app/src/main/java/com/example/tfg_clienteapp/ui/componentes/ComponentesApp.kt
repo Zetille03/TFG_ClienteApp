@@ -1,6 +1,8 @@
 package com.example.tfg_clienteapp.ui.componentes
 
+import android.os.Build
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -26,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Favorite
@@ -78,11 +81,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import com.example.tfg_clienteapp.R
 import com.example.tfg_clienteapp.model.ActividadConsumidor
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.model.ConsumidorActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
+import com.example.tfg_clienteapp.ui.data.Pantallas
 import com.example.tfg_clienteapp.ui.theme.*
 
 
@@ -445,7 +450,7 @@ fun CampoNumeroPlazas(appViewModel: AppViewModel, nPlazas: Int,campoValido: Bool
         value = nPlazas.toString(),
         onValueChange = {
             appViewModel.setNumeroPlazas(it.toInt())
-            appViewModel.setNPlazasValido(appViewModel.isNPlazasValido(it.toInt()))
+            appViewModel.setNPlazasValido(appViewModel.isNPlazasValido(nPlazas = it.toInt()))
         },
         supportingText = {
             Text(
@@ -1290,10 +1295,12 @@ fun DialogoTablonAnunciosOfertante(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DialogoMisActividadesConsumidor(
     appViewModel: AppViewModel,
     actividad: ActividadConsumidor,
+    navController: NavController,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -1312,7 +1319,23 @@ fun DialogoMisActividadesConsumidor(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                CabeceraTextoNormal(value = "Info Actividad")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Info Actividad")
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = {
+                            appViewModel.loadPUTActividadConsumidor(actividad)
+                            navController.navigate(Pantallas.PantallaAñadirActividadConsumidor.name)
+                        }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Favorito"
+                        )
+                    }
+                }
                 Image(
                     painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
                     contentDescription = null,
@@ -1377,10 +1400,12 @@ fun DialogoMisActividadesConsumidor(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DialogoMisActividadesOfertante(
     appViewModel: AppViewModel,
     actividad: ActividadOfertante,
+    navController: NavController,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -1399,7 +1424,23 @@ fun DialogoMisActividadesOfertante(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                CabeceraTextoNormal(value = "Info Actividad")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Info Actividad")
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = {
+                            appViewModel.loadPUTActividadOfertante(actividad)
+                            navController.navigate(Pantallas.PantallaAñadirActividadOfertante.name)
+                        }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Favorito"
+                        )
+                    }
+                }
                 Image(
                     painter = painterResource(id = SeleccionImagenActividad(actividad.categoria)),
                     contentDescription = null,

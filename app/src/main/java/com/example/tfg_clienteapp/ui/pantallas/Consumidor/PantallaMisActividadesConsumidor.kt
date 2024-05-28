@@ -1,5 +1,7 @@
 package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +42,7 @@ import com.example.tfg_clienteapp.ui.componentes.MisActividadesConsumidorCard
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
 import com.example.tfg_clienteapp.ui.data.Pantallas
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaMisActividadesConsumidor(navController: NavController, appViewModel: AppViewModel){
@@ -83,6 +86,7 @@ fun PantallaMisActividadesConsumidor(navController: NavController, appViewModel:
                     DialogoMisActividadesConsumidor(
                         appViewModel = appViewModel,
                         actividad = actividad,
+                        navController,
                         onDismiss = { actividadSeleccionada = null }
                     )
                 }

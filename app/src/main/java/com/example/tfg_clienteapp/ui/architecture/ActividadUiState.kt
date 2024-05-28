@@ -10,5 +10,7 @@ data class ActividadUiState(
     val descripcionValido: Boolean = false,
     val nPlazasValido: Boolean = false,
     val categoriaValido: Boolean = false,
-    val fechaValido: Boolean = false
+    val fechaValido: Boolean = false,
+    val tipoRegistro: String = "POST",
+    val idActividad: Int = 0
 )

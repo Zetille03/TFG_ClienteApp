@@ -98,7 +98,11 @@ fun PantallaAñadirActividadOfertante(navController: NavController, appViewModel
                     )
                     BotonInhabilitado(textoBoton = "Registrar",
                         accion = {
-                            appViewModel.postActividadOfertante()
+                            if(actividadUiState.tipoRegistro=="POST"){
+                                appViewModel.postActividadOfertante()
+                            }else{
+                                appViewModel.updateActividadOfertante()
+                            }
                         },
                         botonActivo = appViewModel.registrarActividadValido())
                 }
