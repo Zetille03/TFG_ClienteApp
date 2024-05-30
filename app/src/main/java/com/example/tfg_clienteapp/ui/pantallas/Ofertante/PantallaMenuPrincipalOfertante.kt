@@ -83,7 +83,7 @@ fun PantallaMenuPrincipalOfertante(navController: NavController, appViewModel: A
             title = "Configuración",
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
-            route = Pantallas.PantallaInicio.name,
+            route = Pantallas.PantallaConfiguracion.name,
             badgeCount = -1
         ),
         NavigationItem(

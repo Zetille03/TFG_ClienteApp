@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -77,6 +78,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -1019,8 +1021,9 @@ fun TablonActividadesConsumidoresCard(
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .size(cardSize)
-            .clickable { accionClicar() },
+
+            .clickable { accionClicar() }
+            .wrapContentHeight(),
         colors = CardDefaults.cardColors(
             containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
         )
@@ -1035,16 +1038,22 @@ fun TablonActividadesConsumidoresCard(
                     .height(imageSize),
                 contentScale = ContentScale.Crop
             )
-            Text(
-                text = actividadConsumidor.titulo,
-                style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
+            BoxWithConstraints(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth()
-
-            )
+            ) {
+                val maxWidth = this.maxWidth
+                Text(
+                    text = actividadConsumidor.titulo,
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                    maxLines = if (maxWidth > 200.dp) 2 else Int.MAX_VALUE, // Ajusta según tu preferencia de tamaño
+                    overflow = if (maxWidth > 200.dp) TextOverflow.Ellipsis else TextOverflow.Clip,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 
@@ -1415,6 +1424,20 @@ fun DialogoMisActividadesConsumidor(
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Ofertante: ")
+                        }
+                        append(if (actividad.ofertanteActividadConsumidor!=null)"Tiene" else "No tiene")
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
                 Button(
                     onClick = {
@@ -1531,6 +1554,20 @@ fun DialogoMisActividadesOfertante(
                             append("Fecha: ")
                         }
                         append(actividad.dueDate.toString())
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append("Participantes: ")
+                        }
+                        append(actividad.listaConsumidoresActividadOfertantes.size.toString())
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )

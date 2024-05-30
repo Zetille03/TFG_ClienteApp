@@ -32,9 +32,6 @@ import com.example.tfg_clienteapp.ui.theme.*
 fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
     val logeoUiState by viewModel.logeoUiState.collectAsState()
 
-    val emailValido = rememberSaveable {
-        mutableStateOf(true)
-    }
 
     Surface(
         modifier = Modifier

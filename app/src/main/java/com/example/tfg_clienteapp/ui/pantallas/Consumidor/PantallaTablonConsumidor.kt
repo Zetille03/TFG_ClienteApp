@@ -3,6 +3,7 @@ package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.CloudSync
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +44,7 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
     val filtrosCategorias = listOf("Todos", "deportes", "naturaleza", "educacion", "otros")
     var filtroSeleccionado by remember { mutableStateOf("Todos") }
     var textoBusqueda by remember { mutableStateOf("") }
+    var soloApuntadas by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -72,6 +75,18 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = soloApuntadas,
+                        onCheckedChange = { soloApuntadas = it }
+                    )
+                    Text(text = "Mostrar solo actividades a las que estoy apuntado")
+                }
             }
 
 
@@ -117,8 +132,10 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
 
                     val actividadesFiltradas = appViewModel.getListaActividadesOfertanteDeConsumidor().filter {
                         (filtroSeleccionado == "Todos" || it.categoria == filtroSeleccionado) &&
-                                (textoBusqueda.isEmpty() || it.titulo.contains(textoBusqueda, ignoreCase = true) || it.titulo.startsWith(textoBusqueda, ignoreCase = true))
+                                (textoBusqueda.isEmpty() || it.titulo.contains(textoBusqueda, ignoreCase = true) || it.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
+                                (!soloApuntadas || appViewModel.estaApuntadoConsumidor(it.idActividadOfertante))
                     }
+
 
 
                     LazyColumn(

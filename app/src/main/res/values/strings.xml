@@ -16,4 +16,6 @@
     <string name="pantalla_tablon_ofertante">Pantalla Tablon Ofertante</string>
     <string name="pantalla_actividades_apuntado_consumidor">Pantalla Actividades Apuntado Consumidor</string>
     <string name="pantalla_actividades_apuntado_ofertante">Pantalla Actividaes Apuntado Ofertante</string>
+    <string name="pantalla_configuracion">Pantalla Configuracion</string>
+    <string name="pantalla_editar_info_usuario">Pantalla Editar Info Usuario</string>
 </resources>

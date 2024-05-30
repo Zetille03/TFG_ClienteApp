@@ -751,6 +751,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 }else{
                     Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idConsumidor)
+                    setEmail(p1.body()!!.email)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
                     actualizarListasConsumidor()
                 }
@@ -776,6 +777,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 }else{
                     Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idOfertante)
+                    setEmail(p1.body()!!.email)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
                     actualizarListasOfertante()
                 }
@@ -783,6 +785,94 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
             override fun onFailure(p0: Call<Ofertante>, p1: Throwable) {
                 Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+    public fun cambiarDatosConsumidor(){
+        val c =  Consumidor()
+        c.username = _logeoUiState.value.nombreUsuario
+        c.email = _logeoUiState.value.email
+        c.password = _logeoUiState.value.password
+        val hash = c.hashCode()
+        c.password = hash.toString()
+        consumidorAPI.update(_logeoUiState.value.idUsuario,c).enqueue(object: Callback<Consumidor>{
+            override fun onFailure(p0: Call<Consumidor>, p1: Throwable) {
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(p0: Call<Consumidor>, p1: Response<Consumidor>) {
+                if(p1.body()==null){
+                    Toast.makeText(context,"Error al modificar", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(context,"Consumidor modificado", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
+        })
+    }
+
+
+
+    fun cambiarDatosOfertante(){
+        val o = Ofertante()
+        o.username = logeoUiState.value.nombreUsuario;
+        o.email = logeoUiState.value.email;
+        o.password = logeoUiState.value.password;
+
+        val hash = o.hashCode();
+        o.password = hash.toString()
+
+        ofertanteAPI.update(_logeoUiState.value.idUsuario,o).enqueue(object: Callback<Ofertante>{
+            override fun onFailure(p0: Call<Ofertante>, p1: Throwable) {
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(p0: Call<Ofertante>, p1: Response<Ofertante>) {
+                if(p1.body()==null){
+                    Toast.makeText(context,"Error al modificar", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(context,"Ofertante modificado", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
+        })
+    }
+
+    fun borrarConsumidor(){
+        consumidorAPI.deleteById(_logeoUiState.value.idUsuario).enqueue(object: Callback<Void>{
+            override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
+                if(p1.isSuccessful){
+                    Toast.makeText(context,"Consumidor borrado", Toast.LENGTH_SHORT).show()
+                    navigator.navigate(Pantallas.PantallaInicio.name)
+                }else{
+                    Toast.makeText(context,"error al borrar el consumidor", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(p0: Call<Void>, p1: Throwable) {
+                Toast.makeText(context,"error de conexion", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+    fun borrarOfertante(){
+        ofertanteAPI.deleteById(_logeoUiState.value.idUsuario).enqueue(object: Callback<Void>{
+            override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
+                if(p1.isSuccessful){
+                    Toast.makeText(context,"Ofertante borrado", Toast.LENGTH_SHORT).show()
+                    navigator.navigate(Pantallas.PantallaInicio.name)
+                }else{
+                    Toast.makeText(context,"error al borrar el ofertante", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(p0: Call<Void>, p1: Throwable) {
+                Toast.makeText(context,"error de conexion", Toast.LENGTH_SHORT).show()
             }
 
         })

@@ -94,6 +94,12 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
                 appViewModel.setTipeUser("Ofertante")
                 PantallaActividadesApuntadoOfertante(navController,appViewModel)
             }
+            composable(route = Pantallas.PantallaConfiguracion.name){
+                PantallaConfiguracion(navController,appViewModel)
+            }
+            composable(route = Pantallas.PantallaEditarInfoUsuario.name){
+                PantallaEditarInfoUsuario(navController,appViewModel)
+            }
         }
     }
 }
