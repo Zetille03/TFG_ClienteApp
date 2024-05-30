@@ -18,13 +18,13 @@ public interface ConsumidorActividadOfertanteAPI {
     Call<List<ConsumidorActividadOfertante>> getAllConsumidoresActividadesOfertantes();
 
     @POST("/consumidor-actividad-ofertante/save")
-    Call<ConsumidorActividadOfertante> save(@Body ConsumidorActividadOfertante consumidorActividadOfertante);
+    Call<ConsumidorActividadOfertante> save(@Query("idActividad") int idActividad, @Query("idConsumidor") int consumidor);
 
     @DELETE("/consumidor-actividad-ofertante/delete")
     Call<Void> deleteById(@Query("id") int id);
 
     @DELETE("/consumidor-actividad-ofertante/delete-by-ids")
-    Call<Void> deleteByIds(@Query("idActividad") int idActividad,@Query("idConsumidor") int idConsumidor);
+    Call<ConsumidorActividadOfertante> deleteByIds(@Query("idActividad") int idActividad,@Query("idConsumidor") int idConsumidor);
 
     @PUT("/consumidor-actividad-ofertante/update")
     Call<ConsumidorActividadOfertante> update(@Query("id") int id, @Body ConsumidorActividadOfertante consumidorActividadOfertante);

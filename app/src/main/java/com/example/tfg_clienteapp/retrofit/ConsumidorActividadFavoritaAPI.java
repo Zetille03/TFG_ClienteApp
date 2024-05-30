@@ -1,6 +1,7 @@
 package com.example.tfg_clienteapp.retrofit;
 
 import com.example.tfg_clienteapp.model.ConsumidorActividadFavorita;
+import com.example.tfg_clienteapp.model.ConsumidorActividadOfertante;
 
 import java.util.List;
 
@@ -27,5 +28,5 @@ public interface ConsumidorActividadFavoritaAPI {
     Call<Void> deleteById(@Query("id") int id);
 
     @DELETE("/consumidor-actividad-favorita/delete-by-ids")
-    Call<Void> deleteByIds(@Query("idActividad") int idActividad,@Query("idConsumidor") int idConsumidor);
+    Call<Void> deleteByIds(@Query("idActividad") int idActividad, @Query("idConsumidor") int idConsumidor);
 }

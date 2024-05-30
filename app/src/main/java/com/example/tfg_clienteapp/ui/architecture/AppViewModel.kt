@@ -2,6 +2,7 @@ package com.example.tfg_clienteapp.ui.architecture
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,7 @@ import com.example.tfg_clienteapp.retrofit.ActividadOfertanteAPI
 import com.example.tfg_clienteapp.retrofit.ConsumidorAPI
 import com.example.tfg_clienteapp.retrofit.ConsumidorActividadFavoritaAPI
 import com.example.tfg_clienteapp.retrofit.ConsumidorActividadOfertanteAPI
+import com.example.tfg_clienteapp.retrofit.EmailAPI
 import com.example.tfg_clienteapp.retrofit.OfertanteAPI
 import com.example.tfg_clienteapp.retrofit.OfertanteActividadFavoritaAPI
 import com.example.tfg_clienteapp.retrofit.RetrofitService
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.update
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.create
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -69,6 +72,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
     private val consumidorActividadFavoritaAPI: ConsumidorActividadFavoritaAPI = retrofitService.retrofit.create(ConsumidorActividadFavoritaAPI::class.java)
 
     private val ofertanteActividadFavoritaAPI: OfertanteActividadFavoritaAPI = retrofitService.retrofit.create(OfertanteActividadFavoritaAPI::class.java)
+
+    private val emailApi: EmailAPI = retrofitService.retrofit.create(EmailAPI::class.java)
 
     //endregion
 
@@ -677,15 +682,15 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         c.password = hash.toString()
         consumidorAPI.save(c).enqueue(object: Callback<Consumidor>{
             override fun onFailure(p0: Call<Consumidor>, p1: Throwable) {
-                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(p0: Call<Consumidor>, p1: Response<Consumidor>) {
                 if(p1.body()==null){
-                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
 
                 }else{
-                    Toast.makeText(context,"Consumidor registrado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Consumidor registrado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idConsumidor)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
                     actualizarListasConsumidor()
@@ -711,15 +716,15 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
         ofertanteAPI.save(o).enqueue(object: Callback<Ofertante>{
             override fun onFailure(p0: Call<Ofertante>, p1: Throwable) {
-                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(p0: Call<Ofertante>, p1: Response<Ofertante>) {
                 if(p1.body()==null){
-                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
 
                 }else{
-                    Toast.makeText(context,"Ofertante registrado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Ofertante registrado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idOfertante)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
                     actualizarListasOfertante()
@@ -741,10 +746,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         consumidorAPI.comprobarLogIn(c.username,c.password).enqueue(object: Callback<Consumidor>{
             override fun onResponse(p0: Call<Consumidor>, p1: Response<Consumidor>) {
                 if(p1.body()==null){
-                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
 
                 }else{
-                    Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idConsumidor)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
                     actualizarListasConsumidor()
@@ -752,7 +757,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             }
 
             override fun onFailure(p0: Call<Consumidor>, p1: Throwable) {
-                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -767,9 +772,9 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         ofertanteAPI.comprobarLogIn(o.username,o.password).enqueue(object: Callback<Ofertante>{
             override fun onResponse(p0: Call<Ofertante>, p1: Response<Ofertante>) {
                 if(p1.body()==null){
-                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idOfertante)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
                     actualizarListasOfertante()
@@ -777,7 +782,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             }
 
             override fun onFailure(p0: Call<Ofertante>, p1: Throwable) {
-                Toast.makeText(context,"Error de conexion", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Error de conexion", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -1014,7 +1019,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             Consumidor(logeoUiState.value.idUsuario)
         )
         if(solapamientoActividadesConsumidorPorFecha(fecha = actividad.dueDate)){
-            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_SHORT).show()
         }else{
             actividadConsumidorAPI.save(actividad).enqueue(object: Callback<ActividadConsumidor>{
                 override fun onResponse(
@@ -1033,19 +1038,19 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                             override fun onFailure(p0: Call<List<ActividadConsumidor>>, p1: Throwable) {
-                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                             }
 
                         })
-                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_SHORT).show()
 
                     }else{
-                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(p0: Call<ActividadConsumidor>, p1: Throwable) {
-                    Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1062,7 +1067,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
             Consumidor(logeoUiState.value.idUsuario)
         )
         if(solapamientoActividadesConsumidorPorFecha(_actividadUiState.value.idActividad,fecha = actividad.dueDate)){
-            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_SHORT).show()
         }else{
             actividadConsumidorAPI.update(_actividadUiState.value.idActividad, actividad).enqueue(object: Callback<ActividadConsumidor>{
                 override fun onResponse(
@@ -1081,19 +1086,19 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                             override fun onFailure(p0: Call<List<ActividadConsumidor>>, p1: Throwable) {
-                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                             }
 
                         })
-                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_SHORT).show()
 
                     }else{
-                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(p0: Call<ActividadConsumidor>, p1: Throwable) {
-                    Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1116,7 +1121,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         actividad.dueDate = convertStringToDate(actividadUiState.value.fecha)
         actividad.categoria = actividadUiState.value.categoria
         if(solapamientoActividadesOfertantePorFecha(fecha = actividad.dueDate)){
-            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_SHORT).show()
         }else{
             actividadOfertanteAPI.save(actividad).enqueue(object: Callback<ActividadOfertante>{
                 override fun onResponse(
@@ -1135,18 +1140,18 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                             override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
-                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                             }
 
                         })
-                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_SHORT).show()
                     }else{
-                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(p0: Call<ActividadOfertante>, p1: Throwable) {
-                    Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1166,7 +1171,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         actividad.dueDate = convertStringToDate(actividadUiState.value.fecha)
         actividad.categoria = actividadUiState.value.categoria
         if(solapamientoActividadesOfertantePorFecha(_actividadUiState.value.idActividad,fecha = actividad.dueDate)){
-            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Tienes una actividad ese dia", Toast.LENGTH_SHORT).show()
         }else{
             actividadOfertanteAPI.update(_actividadUiState.value.idActividad,actividad).enqueue(object: Callback<ActividadOfertante>{
                 override fun onResponse(
@@ -1185,18 +1190,18 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                             override fun onFailure(p0: Call<List<ActividadOfertante>>, p1: Throwable) {
-                                Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                             }
 
                         })
-                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_SHORT).show()
                     }else{
-                        Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(p0: Call<ActividadOfertante>, p1: Throwable) {
-                    Toast.makeText(context,"Error registro", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1206,19 +1211,12 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun apuntarConsumidorAActividadOfertante(actividad: ActividadOfertante){
         if(estaApuntadoConsumidor(actividad.idActividadOfertante)){
-            Toast.makeText(context,"Ya estas apuntado", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,"Ya estas apuntado", Toast.LENGTH_SHORT).show()
         }else{
             if(actividad.numeroPlazas<=actividad.listaConsumidoresActividadOfertantes.size){
-                Toast.makeText(context,"No quedan plazas", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"No quedan plazas", Toast.LENGTH_SHORT).show()
             }else{
-                var consumidorActividadOfertante = ConsumidorActividadOfertante()
-                var actividadOfertante = ActividadOfertante()
-                actividadOfertante.idActividadOfertante = actividad.idActividadOfertante
-                consumidorActividadOfertante.actividadOfertante = actividadOfertante
-                var consumidor = Consumidor()
-                consumidor.idConsumidor = _logeoUiState.value.idUsuario
-                consumidorActividadOfertante.consumidor = consumidor
-                consumidorActividadOfertanteAPI.save(consumidorActividadOfertante).enqueue(object: Callback<ConsumidorActividadOfertante>{
+                consumidorActividadOfertanteAPI.save(actividad.idActividadOfertante,_logeoUiState.value.idUsuario).enqueue(object: Callback<ConsumidorActividadOfertante>{
                     override fun onResponse(
                         p0: Call<ConsumidorActividadOfertante>,
                         p1: Response<ConsumidorActividadOfertante>
@@ -1227,13 +1225,17 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             actualizarActividadesApuntadoConsumidor()
                             actualizarActividadesOfertantesDeConsumidores()
                             actualizarActividadesFavoritasConsumidor()
+                            mensajeConsumidorApuntadoAOfertante(
+                                p1.body()!!.actividadOfertante.ofertante,
+                                p1.body()!!.consumidor,
+                                p1.body()!!.actividadOfertante)
                         }else{
-                            Toast.makeText(context,"Error al apuntarse", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context,"Error al apuntarse", Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     override fun onFailure(p0: Call<ConsumidorActividadOfertante>, p1: Throwable) {
-                        Toast.makeText(context,"Error al apuntarse", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error al apuntarse", Toast.LENGTH_SHORT).show()
                     }
 
                 })
@@ -1243,9 +1245,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     }
 
+
     fun añadirFavoritaConsumidor(idActividad: Int){
         if(esFavoritaOfertante(idActividad)){
-            Toast.makeText(context, "Ya se añadio", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya se añadio", Toast.LENGTH_SHORT).show()
         }else{
             var c = ConsumidorActividadFavorita()
             var consumidor = Consumidor()
@@ -1264,13 +1267,13 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                         actualizarActividadesOfertantesDeConsumidores()
                         actualizarActividadesFavoritasConsumidor()
                     }else{
-                        Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error al añadirla", Toast.LENGTH_SHORT).show()
 
                     }
                 }
 
                 override fun onFailure(p0: Call<ConsumidorActividadFavorita>, p1: Throwable) {
-                    Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Error al añadirla", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1279,7 +1282,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun borrarFavoritaConsumidor(idActividad: Int){
         if(!esFavoritaConsumidor(idActividad)){
-            Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_SHORT).show()
         }else{
             consumidorActividadFavoritaAPI.deleteByIds(idActividad,_logeoUiState.value.idUsuario)
                 .enqueue(object:Callback<Void>{
@@ -1289,12 +1292,12 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             actualizarActividadesOfertantesDeConsumidores()
                             actualizarActividadesFavoritasConsumidor()
                         }else{
-                            Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Error al borrarla", Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     override fun onFailure(p0: Call<Void>, p1: Throwable) {
-                        Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Error al borrarla", Toast.LENGTH_SHORT).show()
 
                     }
 
@@ -1319,22 +1322,32 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun desapuntarseActividadApuntadoConsumidor(idActividad: Int){
         if(!estaApuntadoConsumidor(idActividad)){
-            Toast.makeText(context, "Ya te borraste", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya te borraste", Toast.LENGTH_SHORT).show()
         }else {
             consumidorActividadOfertanteAPI.deleteByIds(idActividad, _logeoUiState.value.idUsuario)
-                .enqueue(object : Callback<Void> {
-                    override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
-                        if (p1.isSuccessful) {
-                            actualizarActividadesApuntadoConsumidor()
-                            actualizarActividadesOfertantesDeConsumidores()
-                            actualizarActividadesFavoritasConsumidor()
+                .enqueue(object : Callback<ConsumidorActividadOfertante> {
+                    override fun onResponse(p0: Call<ConsumidorActividadOfertante>, p1: Response<ConsumidorActividadOfertante>) {
+                        if (p1.body()!=null) {
+                            try {
+                                actualizarActividadesApuntadoConsumidor()
+                                actualizarActividadesOfertantesDeConsumidores()
+                                actualizarActividadesFavoritasConsumidor()
+                                mensajeConsumidorDespuntadoAOfertante(
+                                    p1.body()!!.actividadOfertante.ofertante,
+                                    p1.body()!!.consumidor,
+                                    p1.body()!!.actividadOfertante
+                                )
+                            }catch (e: Exception){
+                                Log.d("holiwi","Manu")
+                            }
+
                         } else {
-                            Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_SHORT).show()
                         }
                     }
 
-                    override fun onFailure(p0: Call<Void>, p1: Throwable) {
-                        Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_LONG).show()
+                    override fun onFailure(p0: Call<ConsumidorActividadOfertante>, p1: Throwable) {
+                        Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_SHORT).show()
                     }
 
             })
@@ -1347,12 +1360,12 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.isSuccessful){
                     actualizarMisActividadesConsumidor()
                 }else{
-                    Toast.makeText(context, "Error al borrar", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Error al borrar", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(p0: Call<Void>, p1: Throwable) {
-                Toast.makeText(context, "Error al borrar", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Error al borrar", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -1360,10 +1373,10 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun apuntarOfertanteAActividadConsumidor(actividad: ActividadConsumidor){
         if(estaApuntadoOfertante(actividad.idActividadConsumidor)){
-            Toast.makeText(context, "Ya esta apuntado", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya esta apuntado", Toast.LENGTH_SHORT).show()
         }else{
             if(actividad.ofertanteActividadConsumidor != null){
-                Toast.makeText(context, "Ya tiene un ofertante", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Ya tiene un ofertante", Toast.LENGTH_SHORT).show()
             }else{
                 actividadConsumidorAPI.updateOfertante(actividad.idActividadConsumidor,_logeoUiState.value.idUsuario)
                     .enqueue(object: Callback<ActividadConsumidor>{
@@ -1375,13 +1388,18 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                                 actualizarActividadesApuntadoOfertante()
                                 actualizarActividadesConsumidoresDeOfertantes()
                                 actualizarActividadesFavoritasOfertante()
+                                mensajeOfertanteApuntadoAConsumidor(
+                                    p1.body()!!.consumidor,
+                                    p1.body()!!.ofertanteActividadConsumidor,
+                                    p1.body()!!
+                                )
                             }else{
-                                Toast.makeText(context, "Error al apuntarse", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Error al apuntarse", Toast.LENGTH_SHORT).show()
                             }
                         }
 
                         override fun onFailure(p0: Call<ActividadConsumidor>, p1: Throwable) {
-                            Toast.makeText(context, "Error al apuntarse", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Error al apuntarse", Toast.LENGTH_SHORT).show()
                         }
 
                     })
@@ -1391,7 +1409,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun añadirFavoritaOfertante(idActividad: Int){
         if(esFavoritaOfertante(idActividad)){
-            Toast.makeText(context, "Ya se añadio", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya se añadio", Toast.LENGTH_SHORT).show()
         }else{
             var o = OfertanteActividadFavorita()
             var ofertante = Ofertante()
@@ -1410,12 +1428,12 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                         actualizarActividadesConsumidoresDeOfertantes()
                         actualizarActividadesFavoritasOfertante()
                     }else{
-                        Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context,"Error al añadirla", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(p0: Call<OfertanteActividadFavorita>, p1: Throwable) {
-                    Toast.makeText(context,"Error al añadirla", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"Error al añadirla", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1424,7 +1442,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun desapuntarseActividadApuntadoOfertante(idActividad: Int){
         if(!estaApuntadoOfertante(idActividad)){
-            Toast.makeText(context, "Ya se ha borrado", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya se ha borrado", Toast.LENGTH_SHORT).show()
         }else{
             actividadConsumidorAPI.deleteOfertante(idActividad).enqueue(object: Callback<ActividadConsumidor>{
                 override fun onResponse(
@@ -1435,13 +1453,18 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                         actualizarActividadesApuntadoOfertante()
                         actualizarActividadesConsumidoresDeOfertantes()
                         actualizarActividadesFavoritasOfertante()
+                        mensajeOfertanteDespuntadoAConsumidor(
+                            p1.body()!!.consumidor,
+                            p1.body()!!.ofertanteActividadConsumidor,
+                            p1.body()!!
+                        )
                     }else{
-                        Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(p0: Call<ActividadConsumidor>, p1: Throwable) {
-                    Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Error al desapuntarse", Toast.LENGTH_SHORT).show()
                 }
 
             })
@@ -1472,12 +1495,12 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.isSuccessful){
                     actualizarMisActividadesOfertante()
                 }else{
-                    Toast.makeText(context, "Error al borrar", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Error al borrar", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(p0: Call<Void>, p1: Throwable) {
-                Toast.makeText(context, "Error al borrar", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Error al borrar", Toast.LENGTH_SHORT).show()
             }
 
         })
@@ -1485,7 +1508,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun borrarFavoritaOfertante(idActividad: Int){
         if(!esFavoritaOfertante(idActividad)){
-            Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Ya se borro de favoritos", Toast.LENGTH_SHORT).show()
         }else {
             ofertanteActividadFavoritaAPI.deleteByIds(idActividad, _logeoUiState.value.idUsuario)
                 .enqueue(object : Callback<Void> {
@@ -1495,12 +1518,12 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             actualizarActividadesConsumidoresDeOfertantes()
                             actualizarActividadesFavoritasOfertante()
                         } else {
-                            Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Error al borrarla", Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     override fun onFailure(p0: Call<Void>, p1: Throwable) {
-                        Toast.makeText(context, "Error al borrarla", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Error al borrarla", Toast.LENGTH_SHORT).show()
                     }
 
                 })
@@ -1592,6 +1615,50 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 badgeListaTablon = _ofertanteUiSate.value.listaActividadesAConsumidores.size
             )
         }
+    }
+
+    public fun sendMail(to:String,subject:String,body:String){
+        emailApi.sendMail(to,subject,body).enqueue(object: Callback<Void> {
+            override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
+                Toast.makeText(context, "Mail enviado", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onFailure(p0: Call<Void>, p1: Throwable) {
+                Toast.makeText(context, "Mail no enviado", Toast.LENGTH_SHORT).show()
+            }
+
+
+        })
+    }
+
+    fun mensajeConsumidorApuntadoAOfertante(ofertante: Ofertante,consumidor: Consumidor,actividad: ActividadOfertante,){
+        var to: String = ofertante.email
+        var subject = "Nuevo participante en "+actividad.titulo
+        var body = "A la actividad " + actividad.titulo + " se acaba de unir " + consumidor.username
+        sendMail(to,subject,body)
+    }
+
+    fun mensajeConsumidorDespuntadoAOfertante(ofertante: Ofertante,consumidor: Consumidor,actividad: ActividadOfertante,){
+        var to: String = ofertante.email
+        var subject = "Perdiste un participante en "+actividad.titulo
+        var body = "A la actividad " + actividad.titulo + " se acaba de borrar " + consumidor.username
+        sendMail(to,subject,body)
+    }
+
+    fun mensajeOfertanteApuntadoAConsumidor(consumidor: Consumidor,ofertante: Ofertante,actividad: ActividadConsumidor,){
+        var to: String = consumidor.email;
+        var subject = "Nuevo ofertante en "+actividad.titulo
+        var body = "A la actividad " + actividad.titulo + " se acaba de apuntar " + ofertante.username +
+                ". No hace falta que busques a nadie mas"
+        sendMail(to,subject,body)
+    }
+
+    fun mensajeOfertanteDespuntadoAConsumidor(consumidor: Consumidor,ofertante: Ofertante,actividad: ActividadConsumidor){
+        var to: String = consumidor.email;
+        var subject = "Perdiste el ofertante en "+actividad.titulo
+        var body = "A la actividad " + actividad.titulo + " se acaba de borrar " + ofertante.username +
+                ". Actualmente no dispones de ofertante."
+        sendMail(to,subject,body)
     }
 
     public fun resetAllUiStates(){

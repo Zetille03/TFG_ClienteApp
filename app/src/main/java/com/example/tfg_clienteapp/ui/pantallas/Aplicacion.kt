@@ -55,33 +55,43 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
                 PantallaSignIn(accionNavigator = {navController.navigate(Pantallas.PantallaSignUp.name)},appViewModel)
             }
             composable(route = Pantallas.PantallaMenuPrincipalConsumidor.name){
+                appViewModel.setTipeUser("Consumidor")
                 PantallaMenuPrincipalConsumidor(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaTablonConsumidor.name ){
+                appViewModel.setTipeUser("Consumidor")
                 PantallaTablonConsumidor(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaMisActividadesConsumidor.name){
+                appViewModel.setTipeUser("Consumidor")
                 PantallaMisActividadesConsumidor(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaAñadirActividadConsumidor.name){
+                appViewModel.setTipeUser("Consumidor")
                 PantallaAñadirActividadConsumidor(navController,appViewModel)
             }
             composable(route=Pantallas.PantallaAñadirActividadOfertante.name){
+                appViewModel.setTipeUser("Ofertante")
                 PantallaAñadirActividadOfertante(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaMenuPrincipalOfertante.name){
+                appViewModel.setTipeUser("Ofertante")
                 PantallaMenuPrincipalOfertante(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaMisActividadesOfertante.name){
+                appViewModel.setTipeUser("Ofertante")
                 PantallaMisActividadesOfertante(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaTablonOfertante.name){
+                appViewModel.setTipeUser("Ofertante")
                 PantallaTablonOfertante(navController,appViewModel)
             }
             composable(route = Pantallas.PantallaActividadesApuntadoConsumidor.name){
+                appViewModel.setTipeUser("Consumidor")
                 PantallaActividadesApuntadoConsumidor(navController,appViewModel)
             }
             composable(route=Pantallas.PantallaActividadesApuntadoOfertante.name){
+                appViewModel.setTipeUser("Ofertante")
                 PantallaActividadesApuntadoOfertante(navController,appViewModel)
             }
         }

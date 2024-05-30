@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -862,6 +864,18 @@ fun SeleccionImagenActividad(categoria: String): Int {
     }
 }
 
+fun SeleccionarColorCard(categoria: String): Color {
+    when(categoria){
+        "deportes"-> return Color.Red
+        "naturaleza"-> return Color.Green
+        "educacion"-> return Color.Blue
+        "otros"-> return Color.Yellow
+        else->{
+            return Color.Gray
+        }
+    }
+}
+
 //region CARDS
 @Composable
 fun TablonActividadesOfertantesCard(
@@ -877,7 +891,10 @@ fun TablonActividadesOfertantesCard(
         modifier = Modifier
             .padding(16.dp)
             .size(cardSize)
-            .clickable { accionClicar() }
+            .clickable { accionClicar() },
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadOfertante.categoria)
+        )
 
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -898,6 +915,7 @@ fun TablonActividadesOfertantesCard(
                     .padding(8.dp)
                     .fillMaxWidth()
 
+
             )
         }
     }
@@ -915,7 +933,10 @@ fun MisActividadesConsumidorCard(
         modifier = Modifier
             .padding(16.dp)
             .size(cardSize)
-            .clickable { accionClicar() }
+            .clickable { accionClicar() },
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
+        )
 
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -936,6 +957,7 @@ fun MisActividadesConsumidorCard(
                     .padding(8.dp)
                     .fillMaxWidth()
 
+
             )
         }
     }
@@ -952,7 +974,10 @@ fun MisActividadesOfertanteCard(
         modifier = Modifier
             .padding(16.dp)
             .size(cardSize)
-            .clickable { accionClicar() }
+            .clickable { accionClicar() },
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadOfertante.categoria)
+        )
 
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -972,6 +997,7 @@ fun MisActividadesOfertanteCard(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth()
+
 
             )
         }
@@ -994,7 +1020,10 @@ fun TablonActividadesConsumidoresCard(
         modifier = Modifier
             .padding(16.dp)
             .size(cardSize)
-            .clickable { accionClicar() }
+            .clickable { accionClicar() },
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
+        )
 
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
