@@ -8,6 +8,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -54,6 +56,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -208,7 +211,7 @@ fun CuerpoPoliticaPrivacidad() {
         value = "Esta Política de Privacidad describe cómo " +
                 "Market Onuba recopila, utiliza y " +
                 "comparte información personal de los usuarios de nuestra aplicación " +
-                "móvil/sitio web/servicio (en adelante, \"Servicio\"). Al utilizar " +
+                "móvil. Al utilizar " +
                 "nuestro Servicio, aceptas las prácticas descritas en esta Política de Privacidad.",
         textAlign = TextAlign.Justify
     )
@@ -807,6 +810,53 @@ public fun ExpandibleCabeceraOfertante(appViewModel: AppViewModel,textoCabecera:
     }
 }
 
+@Composable
+fun ExpandibleFiltros(
+    textoBusqueda: String,
+    accionTexto: (String) -> Unit,
+    soloApuntadas: Boolean,
+    accionSoloApuntadas: (Boolean) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .background(Suave3)
+            .fillMaxWidth()
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.clickable {expanded= !expanded}
+        ) {
+            CabeceraTextoNormal(value = "Filtros")
+        }
+
+        if (expanded) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+            ) {
+                TextField(
+                    value = textoBusqueda,
+                    onValueChange = { accionTexto(it) },
+                    label = { Text("Buscar actividades") },
+                    modifier = Modifier
+                        .padding(vertical = 4.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = soloApuntadas,
+                        onCheckedChange = { accionSoloApuntadas(!soloApuntadas) }
+                    )
+                    Text(text = "Mostrar solo actividades a las que estoy apuntado")
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable()
 fun DropDownList(appViewModel: AppViewModel,opciones: List<String>,selectedText: String,campoValido: Boolean){
@@ -868,10 +918,10 @@ fun SeleccionImagenActividad(categoria: String): Int {
 
 fun SeleccionarColorCard(categoria: String): Color {
     when(categoria){
-        "deportes"-> return Color.Red
-        "naturaleza"-> return Color.Green
-        "educacion"-> return Color.Blue
-        "otros"-> return Color.Yellow
+        "deportes"-> return colorDeportes
+        "naturaleza"-> return colorNaturaleza
+        "educacion"-> return colorEducacion
+        "otros"-> return colorOtros
         else->{
             return Color.Gray
         }
@@ -894,6 +944,9 @@ fun TablonActividadesOfertantesCard(
             .padding(16.dp)
             .size(cardSize)
             .clickable { accionClicar() },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = SeleccionarColorCard(actividadOfertante.categoria)
         )
@@ -936,6 +989,9 @@ fun MisActividadesConsumidorCard(
             .padding(16.dp)
             .size(cardSize)
             .clickable { accionClicar() },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
         )
@@ -977,6 +1033,9 @@ fun MisActividadesOfertanteCard(
             .padding(16.dp)
             .size(cardSize)
             .clickable { accionClicar() },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = SeleccionarColorCard(actividadOfertante.categoria)
         )
@@ -1024,6 +1083,9 @@ fun TablonActividadesConsumidoresCard(
 
             .clickable { accionClicar() }
             .wrapContentHeight(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
         colors = CardDefaults.cardColors(
             containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
         )
@@ -1080,7 +1142,10 @@ fun DialogoTablonAnunciosConsumidor(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
-                .border(1.dp, color = Suave2)
+                .border(1.dp, color = Suave2),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -1222,7 +1287,10 @@ fun DialogoTablonAnunciosOfertante(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
-                .border(1.dp, color = Suave2)
+                .border(1.dp, color = Suave2),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -1352,7 +1420,10 @@ fun DialogoMisActividadesConsumidor(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
-                .border(1.dp, color = Suave2)
+                .border(1.dp, color = Suave2),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -1471,7 +1542,10 @@ fun DialogoMisActividadesOfertante(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
-                .border(1.dp, color = Suave2)
+                .border(1.dp, color = Suave2),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)

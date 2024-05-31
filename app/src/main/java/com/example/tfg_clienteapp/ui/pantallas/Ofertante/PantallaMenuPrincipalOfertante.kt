@@ -1,5 +1,6 @@
 package com.example.tfg_clienteapp.ui.pantallas.Ofertante
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +50,8 @@ import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabeceraOfertante
 import com.example.tfg_clienteapp.ui.data.NavigationItem
 import com.example.tfg_clienteapp.ui.data.Pantallas
+import com.example.tfg_clienteapp.ui.theme.Intenso2
+import com.example.tfg_clienteapp.ui.theme.Suave3
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -179,13 +182,15 @@ fun PantallaMenuPrincipalOfertante(navController: NavController, appViewModel: A
                             }) {
                                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Boton Menu")
                             }
-                        },
+                        },colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Intenso2
+                        ),
                         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
                     )
                 },
                 modifier = Modifier.fillMaxSize()
             ) { paddingValues ->
-                Column(Modifier.padding(paddingValues)) {
+                Column(Modifier.padding(paddingValues).background(Suave3)) {
                     ExpandibleCabeceraOfertante(
                         appViewModel,
                         textoCabecera = "Favoritos",

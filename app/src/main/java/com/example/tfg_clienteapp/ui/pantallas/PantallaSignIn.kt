@@ -72,8 +72,10 @@ fun PantallaSignIn(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
                 accion = {
                     if(logeoUiState.tipoUsuario==("Consumidor")){
                         viewModel.comprobarSigninConsumidor()
+                        viewModel.resetConsumidorData()
                     }else{
                         viewModel.comprobarSigninOfertante()
+                        viewModel.resetOfertanteData()
                     }
                 },
                 botonActivo = viewModel.loginUsuarioValido(),

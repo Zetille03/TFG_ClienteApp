@@ -41,6 +41,7 @@ import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
 import com.example.tfg_clienteapp.ui.componentes.MisActividadesConsumidorCard
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
 import com.example.tfg_clienteapp.ui.data.Pantallas
+import com.example.tfg_clienteapp.ui.theme.Intenso2
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,6 +63,9 @@ fun PantallaMisActividadesConsumidor(navController: NavController, appViewModel:
                             )
                         }
                     },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Intenso2
+                    ),
                     actions = {
                         IconButton(onClick = { appViewModel.actualizarMisActividadesConsumidor() }) {
                             Icon(Icons.Outlined.CloudSync, contentDescription = null)

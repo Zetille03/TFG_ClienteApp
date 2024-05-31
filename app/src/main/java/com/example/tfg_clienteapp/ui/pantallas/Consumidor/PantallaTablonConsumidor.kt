@@ -1,5 +1,8 @@
 package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,9 +39,14 @@ import androidx.navigation.NavController
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
+import com.example.tfg_clienteapp.ui.componentes.ExpandibleFiltros
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
+import com.example.tfg_clienteapp.ui.theme.Intenso2
+import com.example.tfg_clienteapp.ui.theme.Suave3
+import java.sql.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppViewModel){
@@ -48,7 +57,9 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
 
     Scaffold(
         topBar = {
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 TopAppBar(
                     title = { Text("Tablon de anuncios") },
                     navigationIcon = {
@@ -58,8 +69,10 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                                 contentDescription = "ArrowBack"
                             )
                         }
-                    }
-                    ,
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Intenso2
+                    ),
                     actions = {
 
                         IconButton(onClick = { appViewModel.actualizarActividadesOfertantesDeConsumidores() }) {
@@ -67,26 +80,13 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                         }
                     }
                 )
-                TextField(
-                    value = textoBusqueda,
-                    onValueChange = { textoBusqueda = it },
-                    label = { Text("Buscar actividades") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ExpandibleFiltros(
+                    textoBusqueda = textoBusqueda,
+                    accionTexto = {newValue->textoBusqueda = newValue},
+                    soloApuntadas = soloApuntadas,
+                    accionSoloApuntadas = {newValue->soloApuntadas = newValue}
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = soloApuntadas,
-                        onCheckedChange = { soloApuntadas = it }
-                    )
-                    Text(text = "Mostrar solo actividades a las que estoy apuntado")
-                }
+
             }
 
 
@@ -96,7 +96,9 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .background(Suave3)
+                ,
                 contentAlignment = Alignment.Center
             ) {
                 var actividadSeleccionada by remember { mutableStateOf<ActividadOfertante?>(null) }
@@ -130,12 +132,14 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                         }
                     }
 
-                    val actividadesFiltradas = appViewModel.getListaActividadesOfertanteDeConsumidor().filter {
-                        (filtroSeleccionado == "Todos" || it.categoria == filtroSeleccionado) &&
-                                (textoBusqueda.isEmpty() || it.titulo.contains(textoBusqueda, ignoreCase = true) || it.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
-                                (!soloApuntadas || appViewModel.estaApuntadoConsumidor(it.idActividadOfertante))
-                    }
+                    val actividadesFiltradas = appViewModel.getListaActividadesOfertanteDeConsumidor().filter { actividad ->
 
+                        (filtroSeleccionado == "Todos" || actividad.categoria == filtroSeleccionado) &&
+                                (textoBusqueda.isEmpty() ||
+                                        actividad.titulo.contains(textoBusqueda, ignoreCase = true) ||
+                                        actividad.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
+                                (!soloApuntadas || appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante))
+                    }
 
 
                     LazyColumn(

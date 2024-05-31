@@ -34,6 +34,7 @@ import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.DialogoMisActividadesOfertante
 import com.example.tfg_clienteapp.ui.componentes.MisActividadesOfertanteCard
 import com.example.tfg_clienteapp.ui.data.Pantallas
+import com.example.tfg_clienteapp.ui.theme.Intenso2
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +55,9 @@ fun PantallaMisActividadesOfertante(navController: NavController, appViewModel: 
                                 contentDescription = "ArrowBack"
                             )
                         }
-                    },
+                    },colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Intenso2
+                    ),
                     actions = {
                         IconButton(onClick = { appViewModel.actualizarMisActividadesOfertante() }) {
                             Icon(Icons.Outlined.CloudSync, contentDescription = null)

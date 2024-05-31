@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.theme.Intenso2
+import java.sql.Date
 import java.sql.Timestamp
 import java.time.Instant
 import java.time.LocalDate
@@ -119,6 +120,7 @@ fun DatePickerWithDialog(
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun convertMillisToLocalDate(millis: Long): LocalDate {

@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +32,7 @@ import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosOfertante
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesConsumidoresCard
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
+import com.example.tfg_clienteapp.ui.theme.Intenso2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,9 @@ fun PantallaActividadesApuntadoOfertante(navController: NavController, appViewMo
                         )
                     }
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Intenso2
+                ),
                 actions = {
 
                     IconButton(onClick = { appViewModel.actualizarActividadesApuntadoConsumidor() }) {

@@ -97,8 +97,10 @@ fun PantallaSignUp(accionNavigator: ()-> Unit = {},viewModel: AppViewModel){
                 accion = {
                          if(logeoUiState.tipoUsuario == "Consumidor"){
                             viewModel.postConsumidor()
+                             viewModel.resetConsumidorData()
                          }else{
                             viewModel.postOfertante()
+                             viewModel.resetOfertanteData()
                          }
                      },
                 botonActivo = checkboxPoliticas.value && viewModel.registroUsuarioValido(),

@@ -1,6 +1,7 @@
 
 package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -60,6 +61,9 @@ import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
 import com.example.tfg_clienteapp.ui.componentes.ExpandibleCabeceraConsumidor
 import com.example.tfg_clienteapp.ui.data.NavigationItem
 import com.example.tfg_clienteapp.ui.data.Pantallas
+import com.example.tfg_clienteapp.ui.theme.Intenso2
+import com.example.tfg_clienteapp.ui.theme.Intenso3
+import com.example.tfg_clienteapp.ui.theme.Suave3
 import kotlinx.coroutines.launch
 
 
@@ -108,8 +112,6 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
         )
     )
 
-
-    val icon = Icons.Filled.Info
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     var selectedItemIndex by rememberSaveable {
@@ -191,7 +193,7 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
+            color = Suave3,
 
             ) {
             Scaffold(
@@ -207,7 +209,9 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
                                  Icon(imageVector = Icons.Default.Menu, contentDescription = "Boton Menu")
                              }
                          },
-
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Intenso2
+                        ),
                         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
                     )
 
@@ -216,7 +220,10 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
             ) { paddingValues ->
 
 
-                Column(Modifier.padding(paddingValues)) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Suave3)
+                    .padding(paddingValues)) {
 
                     ExpandibleCabeceraConsumidor(
                         appViewModel,

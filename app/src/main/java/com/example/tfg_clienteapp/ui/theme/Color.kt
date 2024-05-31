@@ -20,3 +20,8 @@ val Intenso3 = Color(0xFF402a54)
 val Suave1 = Color(0xFFde83b2)
 val Suave2 = Color(0xFF9b5580)
 val Suave3 = Color(0xFFb39fcc)
+
+val colorDeportes = Color(0xFF9D2534)
+val colorNaturaleza = Color(0xFF44831B)
+val colorEducacion = Color(0xFF223A9D)
+val colorOtros = Color(0xFF9C9925)

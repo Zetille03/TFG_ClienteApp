@@ -1,5 +1,6 @@
 package com.example.tfg_clienteapp.ui.pantallas.Ofertante
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +41,8 @@ import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosOfertante
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesConsumidoresCard
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
+import com.example.tfg_clienteapp.ui.theme.Intenso2
+import com.example.tfg_clienteapp.ui.theme.Suave3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +51,6 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
     var filtroSeleccionado by remember { mutableStateOf("Todos") }
     var textoBusqueda by remember { mutableStateOf("") }
     var soloApuntadas by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             Column {
@@ -60,7 +63,9 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
                                 contentDescription = "ArrowBack"
                             )
                         }
-                    },
+                    },colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Intenso2
+                    ),
                     actions = {
                         IconButton(onClick = { appViewModel.actualizarActividadesConsumidoresDeOfertantes() }) {
                             Icon(Icons.Outlined.CloudSync, contentDescription = null)
@@ -93,7 +98,9 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .background(Suave3)
+                ,
                 contentAlignment = Alignment.Center
             ) {
                 var actividadSeleccionada by remember { mutableStateOf<ActividadConsumidor?>(null) }
