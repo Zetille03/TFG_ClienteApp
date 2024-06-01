@@ -360,8 +360,11 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
 
     fun addElementToListaActividadesRecientesOfertante(actividad: ActividadConsumidor){
         var lista = getListaActividadesRecientesOfertante().toMutableList()
-        lista.add(actividad)
-        setListaActividadesRecientesofertante(lista)
+        if(!lista.contains(actividad)){
+            lista.add(actividad)
+            setListaActividadesRecientesofertante(lista)
+        }
+
     }
 
     fun getBadgeListaMisActividadesOfertante(): Int {
