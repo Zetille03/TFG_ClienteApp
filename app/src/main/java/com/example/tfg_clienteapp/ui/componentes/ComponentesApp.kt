@@ -573,7 +573,7 @@ fun BotonHabilitado(textoBoton: String, accion: () -> Unit, modifier: Modifier =
         colors = ButtonDefaults.buttonColors(
             containerColor = Intenso3
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
@@ -669,14 +669,7 @@ fun DialogoMuchoTexto(
                     TopAppBar(title = { Text(textoCabecera) })
                 },
                 bottomBar = {
-                    Button(
-                        onClick = { onDismiss() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        Text("Cerrar")
-                    }
+                    BotonHabilitado(textoBoton = "Cerrar", accion = { onDismiss() })
                 }
             ) { contentPadding ->
                 LazyColumn(
@@ -726,10 +719,9 @@ public fun ExpandibleCabeceraConsumidor(appViewModel: AppViewModel,textoCabecera
                 if (expanded) {
                     LazyRow {
                         items(listaItems){actividad->
-                            TablonActividadesOfertantesCard(
+                            MiniCardActividadesOfertante(
                                 actividadOfertante = actividad,
                                 accionClicar = { actividadSeleccionada = actividad },
-                                cardSize = 200.dp,
                                 imageSize = 100.dp
                             )
                         }
@@ -782,11 +774,10 @@ public fun ExpandibleCabeceraOfertante(appViewModel: AppViewModel,textoCabecera:
                 if (expanded) {
                     LazyRow {
                         items(listaItems){actividad->
-                            TablonActividadesConsumidoresCard(
+                            MiniCardActividadesConsumidor(
                                 actividadConsumidor = actividad,
                                 accionClicar = { actividadSeleccionada = actividad },
                                 modifier = Modifier,
-                                cardSize = 200.dp,
                                 imageSize = 100.dp
                             )
                         }
@@ -814,8 +805,11 @@ public fun ExpandibleCabeceraOfertante(appViewModel: AppViewModel,textoCabecera:
 fun ExpandibleFiltros(
     textoBusqueda: String,
     accionTexto: (String) -> Unit,
-    soloApuntadas: Boolean,
-    accionSoloApuntadas: (Boolean) -> Unit
+    soloApuntadas: Boolean = false,
+    accionSoloApuntadas: ((Boolean) -> Unit)? = null,
+    filtrosCategorias: List<String>,
+    categoria: String,
+    accionCategoria: (String)-> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -843,14 +837,35 @@ fun ExpandibleFiltros(
                     modifier = Modifier
                         .padding(vertical = 4.dp)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                if(accionSoloApuntadas!=null){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = soloApuntadas,
+                            onCheckedChange = { accionSoloApuntadas(!soloApuntadas) }
+                        )
+                        Text(text = "Mostrar solo actividades a las que estoy apuntado")
+                    }
+                }
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Checkbox(
-                        checked = soloApuntadas,
-                        onCheckedChange = { accionSoloApuntadas(!soloApuntadas) }
-                    )
-                    Text(text = "Mostrar solo actividades a las que estoy apuntado")
+                    items(filtrosCategorias) { filtro ->
+                        Card(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .clickable {
+                                    accionCategoria(filtro)
+                                }
+                        ) {
+                            Text(
+                                text = filtro,
+                                modifier = Modifier.padding(16.dp),
+                                color = if (filtro == categoria) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -934,7 +949,6 @@ fun TablonActividadesOfertantesCard(
     actividadOfertante: ActividadOfertante,
     accionClicar: () -> Unit,
     modifier: Modifier = Modifier,
-    cardSize: Dp,
     imageSize: Dp
 )
 {
@@ -942,8 +956,8 @@ fun TablonActividadesOfertantesCard(
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .size(cardSize)
-            .clickable { accionClicar() },
+            .clickable { accionClicar() }
+            .wrapContentHeight(),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
         ),
@@ -952,7 +966,57 @@ fun TablonActividadesOfertantesCard(
         )
 
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadOfertante.categoria)),
+                contentDescription = actividadOfertante.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+                val maxWidth = this.maxWidth
+                Text(
+                    text = actividadOfertante.titulo,
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                    maxLines = if (maxWidth > 200.dp) 2 else Int.MAX_VALUE,
+                    overflow = if (maxWidth > 200.dp) TextOverflow.Ellipsis else TextOverflow.Clip,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+@Composable
+fun MiniCardActividadesOfertante(
+    actividadOfertante: ActividadOfertante,
+    accionClicar: () -> Unit,
+    modifier: Modifier = Modifier,
+    imageSize: Dp
+) {
+    Card(
+        modifier = modifier
+            .padding(8.dp)
+            .clickable { accionClicar() }
+            .size(imageSize * 1.5f),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadOfertante.categoria)
+        )
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Image(
                 painter = painterResource(id = SeleccionImagenActividad(actividadOfertante.categoria)),
                 contentDescription = actividadOfertante.titulo,
@@ -963,124 +1027,29 @@ fun TablonActividadesOfertantesCard(
             )
             Text(
                 text = actividadOfertante.titulo,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = Color.Black,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(4.dp)
                     .fillMaxWidth()
-
-
             )
         }
     }
-
 }
+
 
 @Composable
 fun MisActividadesConsumidorCard(
     actividadConsumidor: ActividadConsumidor,
     accionClicar: () -> Unit,
-    cardSize: Dp,
     imageSize: Dp
 ){
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .size(cardSize)
-            .clickable { accionClicar() },
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
-        )
-
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(id = SeleccionImagenActividad(actividadConsumidor.categoria)),
-                contentDescription = actividadConsumidor.titulo,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(imageSize),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                text = actividadConsumidor.titulo,
-                style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-
-
-            )
-        }
-    }
-}
-
-@Composable
-fun MisActividadesOfertanteCard(
-    actividadOfertante: ActividadOfertante,
-    accionClicar: () -> Unit,
-    cardSize: Dp,
-    imageSize: Dp
-){
-    Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .size(cardSize)
-            .clickable { accionClicar() },
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = SeleccionarColorCard(actividadOfertante.categoria)
-        )
-
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(id = SeleccionImagenActividad(actividadOfertante.categoria)),
-                contentDescription = actividadOfertante.titulo,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(imageSize),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                text = actividadOfertante.titulo,
-                style = MaterialTheme.typography.headlineSmall,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-
-
-            )
-        }
-    }
-}
-
-
-
-@Composable
-fun TablonActividadesConsumidoresCard(
-    actividadConsumidor: ActividadConsumidor,
-    accionClicar: () -> Unit,
-    modifier: Modifier,
-    cardSize: Dp,
-    imageSize: Dp
-)
-{
-
-    Card(
-        modifier = Modifier
-            .padding(16.dp)
-
             .clickable { accionClicar() }
             .wrapContentHeight(),
         elevation = CardDefaults.cardElevation(
@@ -1111,6 +1080,54 @@ fun TablonActividadesConsumidoresCard(
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
                     color = Color.Black,
+                    maxLines = if (maxWidth > 200.dp) 2 else Int.MAX_VALUE,
+                    overflow = if (maxWidth > 200.dp) TextOverflow.Ellipsis else TextOverflow.Clip,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun MisActividadesOfertanteCard(
+    actividadOfertante: ActividadOfertante,
+    accionClicar: () -> Unit,
+    imageSize: Dp
+){
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable { accionClicar() }
+            .wrapContentHeight(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadOfertante.categoria)
+        )
+
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadOfertante.categoria)),
+                contentDescription = actividadOfertante.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+                val maxWidth = this.maxWidth
+                Text(
+                    text = actividadOfertante.titulo,
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
                     maxLines = if (maxWidth > 200.dp) 2 else Int.MAX_VALUE, // Ajusta según tu preferencia de tamaño
                     overflow = if (maxWidth > 200.dp) TextOverflow.Ellipsis else TextOverflow.Clip,
                     modifier = Modifier.fillMaxWidth()
@@ -1118,7 +1135,107 @@ fun TablonActividadesConsumidoresCard(
             }
         }
     }
+}
 
+
+
+@Composable
+fun TablonActividadesConsumidoresCard(
+    actividadConsumidor: ActividadConsumidor,
+    accionClicar: () -> Unit,
+    modifier: Modifier,
+    imageSize: Dp
+)
+{
+
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable { accionClicar() }
+            .wrapContentHeight()
+        ,
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
+        )
+
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadConsumidor.categoria)),
+                contentDescription = actividadConsumidor.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+                val maxWidth = this.maxWidth
+                Text(
+                    text = actividadConsumidor.titulo,
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                    maxLines = if (maxWidth > 200.dp) 2 else Int.MAX_VALUE,
+                    overflow = if (maxWidth > 200.dp) TextOverflow.Ellipsis else TextOverflow.Clip,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+fun MiniCardActividadesConsumidor(
+    actividadConsumidor: ActividadConsumidor,
+    accionClicar: () -> Unit,
+    modifier: Modifier,
+    imageSize: Dp
+) {
+    Card(
+        modifier = modifier
+            .padding(8.dp)
+            .clickable { accionClicar() }
+            .size(imageSize * 1.5f),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = SeleccionarColorCard(actividadConsumidor.categoria)
+        )
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = SeleccionImagenActividad(actividadConsumidor.categoria)),
+                contentDescription = actividadConsumidor.titulo,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(imageSize),
+                contentScale = ContentScale.Crop
+            )
+            Text(
+                text = actividadConsumidor.titulo,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = Color.Black,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+            )
+        }
+    }
 }
 
 //endregion
@@ -1242,27 +1359,23 @@ fun DialogoTablonAnunciosConsumidor(
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                var boton by remember { mutableStateOf(appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)) }
-                if (boton) {
-                    Button(
-                        onClick = {
-                            appViewModel.desapuntarseActividadApuntadoConsumidor(actividad.idActividadOfertante)
-                            boton = appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Desapuntarse")
-                    }
+                var estaApuntado by remember { mutableStateOf(appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)) }
+                if (estaApuntado) {
+                    BotonHabilitado(
+                        textoBoton = "Desapuntarse",
+                        accion = {
+                        appViewModel.desapuntarseActividadApuntadoConsumidor(actividad.idActividadOfertante)
+                            estaApuntado = appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)
+                        }
+                    )
                 } else {
-                    Button(
-                        onClick = {
+                    BotonHabilitado(
+                        textoBoton = "Apuntarse",
+                        accion = {
                             appViewModel.apuntarConsumidorAActividadOfertante(actividad)
-                            boton = appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Apuntarse")
-                    }
+                            estaApuntado = appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante)
+                        }
+                    )
                 }
             }
         }
@@ -1373,27 +1486,24 @@ fun DialogoTablonAnunciosOfertante(
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-                var boton by remember { mutableStateOf(appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)) }
-                if (boton) {
-                    Button(
-                        onClick = {
+                var estaApuntado by remember { mutableStateOf(appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)) }
+                if (estaApuntado) {
+                    BotonHabilitado(
+                        textoBoton = "Desapuntarse",
+                        accion = {
                             appViewModel.desapuntarseActividadApuntadoOfertante(actividad.idActividadConsumidor)
-                            boton = appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Desapuntarse")
-                    }
+                            estaApuntado = appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)
+                        }
+                    )
                 } else {
-                    Button(
-                        onClick = {
+                    BotonHabilitado(
+                        textoBoton = "Apuntarse",
+                        accion = {
                             appViewModel.apuntarOfertanteAActividadConsumidor(actividad)
-                            boton = appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Apuntarse")
-                    }
+                            estaApuntado = appViewModel.estaApuntadoOfertante(actividad.idActividadConsumidor)
+                        }
+                    )
+
                 }
             }
         }
@@ -1510,14 +1620,10 @@ fun DialogoMisActividadesConsumidor(
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                Button(
-                    onClick = {
-                        appViewModel.borrarActividadConsumidor(actividad.idActividadConsumidor)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Borrar")
-                }
+                BotonHabilitado(
+                    textoBoton = "Borrar",
+                    accion = { appViewModel.borrarActividadConsumidor(actividad.idActividadConsumidor) }
+                )
             }
         }
     }
@@ -1645,15 +1751,10 @@ fun DialogoMisActividadesOfertante(
                     },
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
-
-                Button(
-                    onClick = {
-                        appViewModel.borrarActividadOfertante(actividad.idActividadOfertante)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Borrar")
-                }
+                BotonHabilitado(
+                    textoBoton = "Borrar",
+                    accion = { appViewModel.borrarActividadOfertante(actividad.idActividadOfertante) }
+                )
             }
         }
     }

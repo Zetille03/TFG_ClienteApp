@@ -1,5 +1,6 @@
 package com.example.tfg_clienteapp.ui.pantallas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.BotonHabilitado
 import com.example.tfg_clienteapp.ui.data.Pantallas
 import com.example.tfg_clienteapp.ui.theme.Intenso2
+import com.example.tfg_clienteapp.ui.theme.Suave3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +64,9 @@ fun PantallaConfiguracion(navController: NavController, appViewModel: AppViewMod
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .background(Suave3)
+                ,
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -72,6 +76,9 @@ fun PantallaConfiguracion(navController: NavController, appViewModel: AppViewMod
                         .padding(16.dp)
                 ) {
                     Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = Intenso2
+                        ),
                         elevation = CardDefaults.cardElevation(
                             defaultElevation = 8.dp
                         ),

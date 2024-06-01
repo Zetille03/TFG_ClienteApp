@@ -1,6 +1,8 @@
 package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,34 +30,50 @@ import androidx.navigation.NavController
 import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
+import com.example.tfg_clienteapp.ui.componentes.ExpandibleFiltros
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
 import com.example.tfg_clienteapp.ui.theme.Intenso2
+import com.example.tfg_clienteapp.ui.theme.Suave3
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaActividadesApuntadoConsumidor(navController: NavController, appViewModel: AppViewModel){
+    val filtrosCategorias = listOf("Todos", "deportes", "naturaleza", "educacion", "otros")
+    var filtroSeleccionado by remember { mutableStateOf("Todos") }
+    var textoBusqueda by remember { mutableStateOf("") }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Actividades como participante") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "ArrowBack"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Intenso2
-                ),
-                actions = {
+            Column {
+                TopAppBar(
+                    title = { Text("Actividades como participante") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "ArrowBack"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Intenso2
+                    ),
+                    actions = {
 
-                    IconButton(onClick = { appViewModel.actualizarActividadesApuntadoConsumidor() }) {
-                        Icon(Icons.Outlined.CloudSync, contentDescription = null)
+                        IconButton(onClick = { appViewModel.actualizarActividadesApuntadoConsumidor() }) {
+                            Icon(Icons.Outlined.CloudSync, contentDescription = null)
+                        }
                     }
-                }
-            )
+                )
+                ExpandibleFiltros(
+                    textoBusqueda = textoBusqueda,
+                    accionTexto = {newValue->textoBusqueda = newValue},
+                    filtrosCategorias = filtrosCategorias,
+                    categoria = filtroSeleccionado,
+                    accionCategoria = {newValue->filtroSeleccionado= newValue}
+                )
+            }
+
 
         },
         content = { paddingValues ->
@@ -63,8 +81,8 @@ fun PantallaActividadesApuntadoConsumidor(navController: NavController, appViewM
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
+                    .padding(paddingValues)
+                    .background(Suave3)
             ) {
                 var actividadSeleccionada by remember { mutableStateOf<ActividadOfertante?>(null) }
 
@@ -75,13 +93,23 @@ fun PantallaActividadesApuntadoConsumidor(navController: NavController, appViewM
                         onDismiss = { actividadSeleccionada = null }
                     )
                 }
+
+                val actividadesFiltradas = appViewModel.getListaActividadesApuntadoConsumidor().filter { actividad ->
+
+                    (filtroSeleccionado == "Todos" || actividad.categoria == filtroSeleccionado) &&
+                            (textoBusqueda.isEmpty() ||
+                                    actividad.titulo.contains(textoBusqueda, ignoreCase = true) ||
+                                    actividad.titulo.startsWith(textoBusqueda, ignoreCase = true))
+                }
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(horizontal = 40.dp)
+                    ,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    items(appViewModel.getListaActividadesApuntadoConsumidor()) { actividad ->
+                    items(actividadesFiltradas) { actividad ->
                         TablonActividadesOfertantesCard(
                             actividadOfertante = actividad,
                             accionClicar = {
@@ -92,7 +120,6 @@ fun PantallaActividadesApuntadoConsumidor(navController: NavController, appViewM
                             modifier = Modifier
                                 .padding(16.dp)
                                 .fillMaxWidth(),
-                            cardSize = 250.dp,
                             imageSize = 150.dp
                         )
                     }

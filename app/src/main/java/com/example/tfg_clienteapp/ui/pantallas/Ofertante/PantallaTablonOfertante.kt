@@ -39,6 +39,7 @@ import com.example.tfg_clienteapp.model.ActividadOfertante
 import com.example.tfg_clienteapp.ui.architecture.AppViewModel
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosConsumidor
 import com.example.tfg_clienteapp.ui.componentes.DialogoTablonAnunciosOfertante
+import com.example.tfg_clienteapp.ui.componentes.ExpandibleFiltros
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesConsumidoresCard
 import com.example.tfg_clienteapp.ui.componentes.TablonActividadesOfertantesCard
 import com.example.tfg_clienteapp.ui.theme.Intenso2
@@ -72,93 +73,57 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
                         }
                     }
                 )
-                TextField(
-                    value = textoBusqueda,
-                    onValueChange = { textoBusqueda = it },
-                    label = { Text("Buscar actividades") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ExpandibleFiltros(
+                    textoBusqueda = textoBusqueda,
+                    accionTexto = {newValue->textoBusqueda = newValue},
+                    soloApuntadas = soloApuntadas,
+                    accionSoloApuntadas = {newValue->soloApuntadas = newValue},
+                    filtrosCategorias = filtrosCategorias,
+                    categoria = filtroSeleccionado,
+                    accionCategoria = {newValue->filtroSeleccionado= newValue}
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = soloApuntadas,
-                        onCheckedChange = { soloApuntadas = it }
-                    )
-                    Text(text = "Mostrar solo actividades a las que estoy apuntado")
-                }
             }
         },
         content = { paddingValues ->
+
+            var actividadSeleccionada by remember { mutableStateOf<ActividadConsumidor?>(null) }
+
+            actividadSeleccionada?.let { actividad ->
+                DialogoTablonAnunciosOfertante(
+                    appViewModel = appViewModel,
+                    actividad = actividad,
+                    onDismiss = { actividadSeleccionada = null }
+                )
+            }
+            val actividadesFiltradas = appViewModel.getListaActividadesConsumidoresDeOfertante().filter {
+                (filtroSeleccionado == "Todos" || it.categoria == filtroSeleccionado) &&
+                        (textoBusqueda.isEmpty() || it.titulo.contains(textoBusqueda, ignoreCase = true) || it.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
+                        (!soloApuntadas || appViewModel.estaApuntadoOfertante(it.idActividadConsumidor))
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
                     .background(Suave3)
-                ,
-                contentAlignment = Alignment.Center
             ) {
-                var actividadSeleccionada by remember { mutableStateOf<ActividadConsumidor?>(null) }
-
-                actividadSeleccionada?.let { actividad ->
-                    DialogoTablonAnunciosOfertante(
-                        appViewModel = appViewModel,
-                        actividad = actividad,
-                        onDismiss = { actividadSeleccionada = null }
-                    )
-                }
-                Column {
-                    // Filtros de categoría
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(filtrosCategorias) { filtro ->
-                            Card(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .clickable {
-                                        filtroSeleccionado = filtro
-                                    }
-                            ) {
-                                Text(
-                                    text = filtro,
-                                    modifier = Modifier.padding(16.dp),
-                                    color = if (filtro == filtroSeleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        }
-                    }
-
-                    val actividadesFiltradas = appViewModel.getListaActividadesConsumidoresDeOfertante().filter {
-                        (filtroSeleccionado == "Todos" || it.categoria == filtroSeleccionado) &&
-                                (textoBusqueda.isEmpty() || it.titulo.contains(textoBusqueda, ignoreCase = true) || it.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
-                                (!soloApuntadas || appViewModel.estaApuntadoOfertante(it.idActividadConsumidor))
-                    }
-
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(actividadesFiltradas) { actividad ->
-                            TablonActividadesConsumidoresCard(
-                                actividadConsumidor = actividad,
-                                accionClicar = {
-                                    actividadSeleccionada = actividad
-                                    appViewModel.addElementToListaActividadesRecientesOfertante(actividad)
-                                },
-                                modifier = Modifier,
-                                cardSize = 250.dp,
-                                imageSize = 150.dp
-                            )
-                        }
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = 40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(actividadesFiltradas) { actividad ->
+                        TablonActividadesConsumidoresCard(
+                            actividadConsumidor = actividad,
+                            accionClicar = {
+                                actividadSeleccionada = actividad
+                                appViewModel.addElementToListaActividadesRecientesOfertante(actividad)
+                            },
+                            modifier = Modifier,
+                            imageSize = 150.dp
+                        )
                     }
                 }
+
             }
         }
     )

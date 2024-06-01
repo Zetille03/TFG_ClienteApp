@@ -1,6 +1,7 @@
 package com.example.tfg_clienteapp.ui.pantallas
 
 import android.os.Build
+import android.view.Surface
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -25,6 +26,7 @@ import com.example.tfg_clienteapp.ui.pantallas.Ofertante.PantallaAñadirActivida
 import com.example.tfg_clienteapp.ui.pantallas.Ofertante.PantallaMenuPrincipalOfertante
 import com.example.tfg_clienteapp.ui.pantallas.Ofertante.PantallaMisActividadesOfertante
 import com.example.tfg_clienteapp.ui.pantallas.Ofertante.PantallaTablonOfertante
+import com.example.tfg_clienteapp.ui.theme.Suave3
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -32,7 +34,7 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
     val appViewModel = AppViewModel(MyApp.instance,navController)
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.White
+        color = Suave3
     ){
         NavHost(
             navController = navController,
@@ -44,8 +46,7 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
                 appViewModel.resetAllUiStates()
                 PantallaInicio(
                     accionSignIn = {navController.navigate(Pantallas.PantallaSignIn.name)},
-                   accionSignUp =  {navController.navigate(Pantallas.PantallaSignUp.name)},
-                    accionMenu = {navController.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)}
+                   accionSignUp =  {navController.navigate(Pantallas.PantallaSignUp.name)}
                 )
             }
             composable(route = Pantallas.PantallaSignUp.name){
@@ -103,4 +104,6 @@ fun Aplicacion(navController: NavHostController = rememberNavController()){
         }
     }
 }
+
+
 

@@ -84,7 +84,10 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                     textoBusqueda = textoBusqueda,
                     accionTexto = {newValue->textoBusqueda = newValue},
                     soloApuntadas = soloApuntadas,
-                    accionSoloApuntadas = {newValue->soloApuntadas = newValue}
+                    accionSoloApuntadas = {newValue->soloApuntadas = newValue},
+                    filtrosCategorias = filtrosCategorias,
+                    categoria = filtroSeleccionado,
+                    accionCategoria = {newValue->filtroSeleccionado= newValue}
                 )
 
             }
@@ -98,8 +101,6 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                     .fillMaxSize()
                     .padding(paddingValues)
                     .background(Suave3)
-                ,
-                contentAlignment = Alignment.Center
             ) {
                 var actividadSeleccionada by remember { mutableStateOf<ActividadOfertante?>(null) }
 
@@ -111,60 +112,37 @@ fun PantallaTablonConsumidor(navController: NavController, appViewModel: AppView
                     )
                 }
 
-                Column {
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(filtrosCategorias) { filtro ->
-                            Card(
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .clickable {
-                                        filtroSeleccionado = filtro
-                                    }
-                            ) {
-                                Text(
-                                    text = filtro,
-                                    modifier = Modifier.padding(16.dp),
-                                    color = if (filtro == filtroSeleccionado) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        }
-                    }
+                val actividadesFiltradas = appViewModel.getListaActividadesOfertanteDeConsumidor().filter { actividad ->
 
-                    val actividadesFiltradas = appViewModel.getListaActividadesOfertanteDeConsumidor().filter { actividad ->
+                    (filtroSeleccionado == "Todos" || actividad.categoria == filtroSeleccionado) &&
+                            (textoBusqueda.isEmpty() ||
+                                    actividad.titulo.contains(textoBusqueda, ignoreCase = true) ||
+                                    actividad.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
+                            (!soloApuntadas || appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante))
+                }
 
-                        (filtroSeleccionado == "Todos" || actividad.categoria == filtroSeleccionado) &&
-                                (textoBusqueda.isEmpty() ||
-                                        actividad.titulo.contains(textoBusqueda, ignoreCase = true) ||
-                                        actividad.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
-                                (!soloApuntadas || appViewModel.estaApuntadoConsumidor(actividad.idActividadOfertante))
-                    }
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = 40.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
+                    items(actividadesFiltradas) { actividad ->
+                        TablonActividadesOfertantesCard(
+                            actividadOfertante = actividad,
+                            accionClicar = {
+                                actividadSeleccionada = actividad
+                                appViewModel.addElementToListaActividadesRecientesConsumidor(actividad)
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        items(actividadesFiltradas) { actividad ->
-                            TablonActividadesOfertantesCard(
-                                actividadOfertante = actividad,
-                                accionClicar = {
-                                    actividadSeleccionada = actividad
-                                    appViewModel.addElementToListaActividadesRecientesConsumidor(actividad)
-
-                                },
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .fillMaxWidth(),
-                                cardSize = 250.dp,
-                                imageSize = 150.dp
-                            )
-                        }
+                            },
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            imageSize = 150.dp
+                        )
                     }
                 }
+
 
             }
 

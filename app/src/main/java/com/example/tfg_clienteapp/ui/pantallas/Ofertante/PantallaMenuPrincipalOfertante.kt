@@ -2,6 +2,7 @@ package com.example.tfg_clienteapp.ui.pantallas.Ofertante
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -43,6 +44,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -167,30 +169,34 @@ fun PantallaMenuPrincipalOfertante(navController: NavController, appViewModel: A
         },
         drawerState = drawerState
     ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Bienvenido, $nombreUsuario ") },
-                        modifier = Modifier.fillMaxWidth(),
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                scope.launch { drawerState.open() }
-                            }) {
-                                Icon(imageVector = Icons.Default.Menu, contentDescription = "Boton Menu")
-                            }
-                        },colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Intenso2
-                        ),
-                        scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-                    )
-                },
-                modifier = Modifier.fillMaxSize()
-            ) { paddingValues ->
-                Column(Modifier.padding(paddingValues).background(Suave3)) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Bienvenido, $nombreUsuario ") },
+                    modifier = Modifier.fillMaxWidth(),
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            scope.launch { drawerState.open() }
+                        }) {
+                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Boton Menu")
+                        }
+                    },colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Intenso2
+                    ),
+                    scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+                )
+            },
+            modifier = Modifier.fillMaxSize()
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(Suave3)
+                ,
+                contentAlignment = Alignment.TopCenter
+            ){
+                Column(Modifier.background(Suave3)) {
                     ExpandibleCabeceraOfertante(
                         appViewModel,
                         textoCabecera = "Favoritos",
@@ -204,6 +210,7 @@ fun PantallaMenuPrincipalOfertante(navController: NavController, appViewModel: A
 
                 }
             }
+
         }
     }
 }

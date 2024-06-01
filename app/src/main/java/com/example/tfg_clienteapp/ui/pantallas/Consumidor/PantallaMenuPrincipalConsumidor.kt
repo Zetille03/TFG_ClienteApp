@@ -3,6 +3,7 @@ package com.example.tfg_clienteapp.ui.pantallas.Consumidor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -48,6 +49,7 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -186,8 +188,7 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
 
                     }
                 }
-            }
-            ,
+            },
             drawerState = drawerState
         ){
 
@@ -219,23 +220,27 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
                 modifier = Modifier.fillMaxSize()
             ) { paddingValues ->
 
+                Box(
 
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .background(Suave3)
-                    .padding(paddingValues)) {
+                ){
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .background(Suave3)
+                        .padding(paddingValues)) {
 
-                    ExpandibleCabeceraConsumidor(
-                        appViewModel,
-                        textoCabecera = "Favoritos",
-                        appViewModel.getListaActividadesFavoritasConsumidor()
-                    )
-                    ExpandibleCabeceraConsumidor(
-                        appViewModel,
-                        textoCabecera = "Recientes",
-                        appViewModel.getListaActividadesRecientesConsumidor()
-                    )
+                        ExpandibleCabeceraConsumidor(
+                            appViewModel,
+                            textoCabecera = "Favoritos",
+                            appViewModel.getListaActividadesFavoritasConsumidor()
+                        )
+                        ExpandibleCabeceraConsumidor(
+                            appViewModel,
+                            textoCabecera = "Recientes",
+                            appViewModel.getListaActividadesRecientesConsumidor()
+                        )
+                    }
                 }
+
 
 
 
@@ -243,5 +248,11 @@ fun PantallaMenuPrincipalConsumidor(navController: NavController, appViewModel: 
             }
 
         }
+    }
+    DisposableEffect(drawerState.isClosed) {
+        if (drawerState.isClosed) {
+            selectedItemIndex = -1 // Reset selectedItemIndex when drawer closes
+        }
+        onDispose { }
     }
 }
