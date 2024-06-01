@@ -690,7 +690,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
 
                 }else{
-                    Toast.makeText(context,"Consumidor registrado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idConsumidor)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
                     actualizarListasConsumidor()
@@ -724,7 +723,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
 
                 }else{
-                    Toast.makeText(context,"Ofertante registrado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idOfertante)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
                     actualizarListasOfertante()
@@ -749,7 +747,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
 
                 }else{
-                    Toast.makeText(context,"Consumidor logeado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idConsumidor)
                     setEmail(p1.body()!!.email)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalConsumidor.name)
@@ -775,7 +772,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.body()==null){
                     Toast.makeText(context,"Registro equívoco", Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(context,"Ofertante logeado", Toast.LENGTH_SHORT).show()
                     setIdUser(p1.body()!!.idOfertante)
                     setEmail(p1.body()!!.email)
                     navigator.navigate(Pantallas.PantallaMenuPrincipalOfertante.name)
@@ -806,7 +802,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.body()==null){
                     Toast.makeText(context,"Error al modificar", Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(context,"Consumidor modificado", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -834,7 +829,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.body()==null){
                     Toast.makeText(context,"Error al modificar", Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(context,"Ofertante modificado", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -846,7 +840,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         consumidorAPI.deleteById(_logeoUiState.value.idUsuario).enqueue(object: Callback<Void>{
             override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
                 if(p1.isSuccessful){
-                    Toast.makeText(context,"Consumidor borrado", Toast.LENGTH_SHORT).show()
                     navigator.navigate(Pantallas.PantallaInicio.name)
                 }else{
                     Toast.makeText(context,"error al borrar el consumidor", Toast.LENGTH_SHORT).show()
@@ -864,7 +857,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         ofertanteAPI.deleteById(_logeoUiState.value.idUsuario).enqueue(object: Callback<Void>{
             override fun onResponse(p0: Call<Void>, p1: Response<Void>) {
                 if(p1.isSuccessful){
-                    Toast.makeText(context,"Ofertante borrado", Toast.LENGTH_SHORT).show()
                     navigator.navigate(Pantallas.PantallaInicio.name)
                 }else{
                     Toast.makeText(context,"error al borrar el ofertante", Toast.LENGTH_SHORT).show()
@@ -891,7 +883,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.body()!=null){
                     setListaActividadesOfertantesDeConsumidor(p1.body()!!)
                     setBadgeListaTablonConsumidor(p1.body()!!.size)
-                    Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                 }
@@ -913,7 +904,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.body()!=null){
                     setListaMisActividadesConsumidor(p1.body()!!)
                     setBadgeListaMisActividadesConsumidor(p1.body()!!.size)
-                    Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                 }
@@ -936,7 +926,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     if(p1.body()!=null){
                         setListaActividadesApuntadoConsumidor(p1.body()!!)
                         setBadgeListaApuntadoConsumidor(p1.body()!!.size)
-                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                     }
@@ -958,7 +947,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 ) {
                     if(p1.body()!=null){
                         setListaActividadesFavoritasConsumidor(p1.body()!!)
-                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                     }
@@ -1000,7 +988,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 if(p1.body()!=null){
                     setListaActividadesConsumidoresDeOfertante(p1.body()!!)
                     setBadgeListaTablonOfertante(p1.body()!!.size)
-                    Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                 }            }
@@ -1022,7 +1009,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     if(p1.body()!=null){
                         setListaMisActividadesOfertante(p1.body()!!)
                         setBadgeListaMisActividadesOfertante(p1.body()!!.size)
-                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                     }
@@ -1045,7 +1031,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                     if(p1.body()!=null){
                         setListaActividadesApuntadoOfertante(p1.body()!!)
                         setBadgeListaApuntadoOfertante(p1.body()!!.size)
-                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                     }
@@ -1068,7 +1053,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                 ) {
                     if(p1.body()!=null){
                         setListaActividadesFavoritasOfertante(p1.body()!!)
-                        Toast.makeText(context,"Lista actualizada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error al actualizar", Toast.LENGTH_SHORT).show()
                     }
@@ -1132,7 +1116,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                         })
-                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_SHORT).show()
 
                     }else{
                         Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
@@ -1180,7 +1163,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                         })
-                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_SHORT).show()
 
                     }else{
                         Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
@@ -1234,7 +1216,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                         })
-                        Toast.makeText(context,"Actividad añadida", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                     }
@@ -1284,7 +1265,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                             }
 
                         })
-                        Toast.makeText(context,"Actividad modificada", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context,"Error registro", Toast.LENGTH_SHORT).show()
                     }
@@ -1428,7 +1408,6 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                                     p1.body()!!.actividadOfertante
                                 )
                             }catch (e: Exception){
-                                Log.d("holiwi","Manu")
                             }
 
                         } else {
