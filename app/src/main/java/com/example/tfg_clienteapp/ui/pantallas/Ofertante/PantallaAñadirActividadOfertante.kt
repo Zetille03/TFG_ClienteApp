@@ -42,7 +42,13 @@ fun PantallaAñadirActividadOfertante(navController: NavController, appViewModel
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Añadir nueva actividad") },
+                title = {
+                    if(actividadUiState.tipoRegistro=="POST"){
+                        Text("Añadir nueva actividad")
+                    }else{
+                        Text("Modificar actividad")
+                    }
+                },
                 navigationIcon = {
                     IconButton(
                         onClick = {
