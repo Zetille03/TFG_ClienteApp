@@ -52,6 +52,8 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
     var filtroSeleccionado by remember { mutableStateOf("Todos") }
     var textoBusqueda by remember { mutableStateOf("") }
     var soloApuntadas by remember { mutableStateOf(false) }
+    var sinOfertante by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             Column {
@@ -80,7 +82,9 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
                     accionSoloApuntadas = {newValue->soloApuntadas = newValue},
                     filtrosCategorias = filtrosCategorias,
                     categoria = filtroSeleccionado,
-                    accionCategoria = {newValue->filtroSeleccionado= newValue}
+                    accionCategoria = {newValue->filtroSeleccionado= newValue},
+                    sinOfertante = sinOfertante,
+                    accionSinOfertante = {newValue->sinOfertante = newValue}
                 )
             }
         },
@@ -98,7 +102,8 @@ fun PantallaTablonOfertante(navController: NavController, appViewModel: AppViewM
             val actividadesFiltradas = appViewModel.getListaActividadesConsumidoresDeOfertante().filter {
                 (filtroSeleccionado == "Todos" || it.categoria == filtroSeleccionado) &&
                         (textoBusqueda.isEmpty() || it.titulo.contains(textoBusqueda, ignoreCase = true) || it.titulo.startsWith(textoBusqueda, ignoreCase = true)) &&
-                        (!soloApuntadas || appViewModel.estaApuntadoOfertante(it.idActividadConsumidor))
+                        (!soloApuntadas || appViewModel.estaApuntadoOfertante(it.idActividadConsumidor)) &&
+                        (!sinOfertante || it.ofertanteActividadConsumidor == null)
             }
             Box(
                 modifier = Modifier

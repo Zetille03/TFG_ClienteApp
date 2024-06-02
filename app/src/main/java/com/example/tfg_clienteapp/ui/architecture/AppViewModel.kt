@@ -1110,7 +1110,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                                 p1: Response<List<ActividadConsumidor>>
                             ) {
                                 if(p1.body()!=null){
-                                    setListaMisActividadesConsumidor(p1.body()!!)
+                                    actualizarMisActividadesConsumidor()
                                 }
                             }
 
@@ -1210,7 +1210,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
                                 p1: Response<List<ActividadOfertante>>
                             ) {
                                 if(p1.body()!=null){
-                                    setListaMisActividadesOfertante(p1.body()!!)
+                                    actualizarMisActividadesOfertante()
                                 }
                             }
 
@@ -1323,14 +1323,7 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         if(esFavoritaOfertante(idActividad)){
             Toast.makeText(context, "Ya se añadio", Toast.LENGTH_SHORT).show()
         }else{
-            var c = ConsumidorActividadFavorita()
-            var consumidor = Consumidor()
-            consumidor.idConsumidor = _logeoUiState.value.idUsuario
-            var actividadOfertante = ActividadOfertante()
-            actividadOfertante.idActividadOfertante = idActividad
-            c.consumidor = consumidor
-            c.actividadOfertante = actividadOfertante
-            consumidorActividadFavoritaAPI.save(c).enqueue(object: Callback<ConsumidorActividadFavorita>{
+            consumidorActividadFavoritaAPI.save(idActividad,_logeoUiState.value.idUsuario).enqueue(object: Callback<ConsumidorActividadFavorita>{
                 override fun onResponse(
                     p0: Call<ConsumidorActividadFavorita>,
                     p1: Response<ConsumidorActividadFavorita>
@@ -1483,14 +1476,8 @@ class AppViewModel(public val context: Context, public val navigator: NavHostCon
         if(esFavoritaOfertante(idActividad)){
             Toast.makeText(context, "Ya se añadio", Toast.LENGTH_SHORT).show()
         }else{
-            var o = OfertanteActividadFavorita()
-            var ofertante = Ofertante()
-            var actividadConsumidor = ActividadConsumidor()
-            ofertante.idOfertante = _logeoUiState.value.idUsuario
-            actividadConsumidor.idActividadConsumidor = idActividad
-            o.ofertante = ofertante
-            o.actividadConsumidor = actividadConsumidor
-            ofertanteActividadFavoritaAPI.save(o).enqueue(object: Callback<OfertanteActividadFavorita>{
+
+            ofertanteActividadFavoritaAPI.save(idActividad,_logeoUiState.value.idUsuario).enqueue(object: Callback<OfertanteActividadFavorita>{
                 override fun onResponse(
                     p0: Call<OfertanteActividadFavorita>,
                     p1: Response<OfertanteActividadFavorita>

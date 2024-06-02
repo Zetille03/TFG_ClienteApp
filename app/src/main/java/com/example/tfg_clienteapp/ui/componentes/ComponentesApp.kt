@@ -807,6 +807,8 @@ fun ExpandibleFiltros(
     accionTexto: (String) -> Unit,
     soloApuntadas: Boolean = false,
     accionSoloApuntadas: ((Boolean) -> Unit)? = null,
+    sinOfertante: Boolean = false,
+    accionSinOfertante: ((Boolean) -> Unit)? = null,
     filtrosCategorias: List<String>,
     categoria: String,
     accionCategoria: (String)-> Unit
@@ -848,6 +850,18 @@ fun ExpandibleFiltros(
                         Text(text = "Mostrar solo actividades a las que estoy apuntado")
                     }
                 }
+                if(accionSinOfertante!=null){
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = sinOfertante,
+                            onCheckedChange = { accionSinOfertante(!sinOfertante) }
+                        )
+                        Text(text = "Mostrar actividades sin ofertante")
+                    }
+                }
+
                 LazyRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {

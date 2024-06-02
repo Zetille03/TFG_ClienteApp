@@ -17,7 +17,7 @@ public interface OfertanteActividadFavoritaAPI {
     Call<List<OfertanteActividadFavorita>> getAllOfertanteActividadesFavoritas();
 
     @POST("/ofertante-actividad-favorita/save")
-    Call<OfertanteActividadFavorita> save(@Body OfertanteActividadFavorita ofertanteActividadFavorita);
+    Call<OfertanteActividadFavorita> save(@Query("idActividad") int idActividad,@Query("idOfertante") int idOfertante);
 
     @DELETE("/ofertante-actividad-favorita/delete")
     Call<Void> deleteById(@Query("id") int id);

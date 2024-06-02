@@ -19,7 +19,7 @@ public interface ConsumidorActividadFavoritaAPI {
     Call<List<ConsumidorActividadFavorita>> getAllConsumidorActividadesFavoritas();
 
     @POST("/consumidor-actividad-favorita/save")
-    Call<ConsumidorActividadFavorita> save(@Body ConsumidorActividadFavorita consumidorActividadFavorita);
+    Call<ConsumidorActividadFavorita> save(@Query("idActividad") int idActividad,@Query("idConsumidor") int idConsumidor);
 
     @PUT("/consumidor-actividad-favorita/update")
     Call<ConsumidorActividadFavorita> update(@Query("id") int id,@Body ConsumidorActividadFavorita consumidorActividadFavorita);
